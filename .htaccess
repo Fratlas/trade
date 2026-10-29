@@ -2,7 +2,7 @@ Options -Indexes
 RewriteEngine On
 
 # Do not publish database configuration, source, migrations or repository metadata.
-RewriteRule ^(config|confing|src|sql|\.git)(/|$) - [F,L,NC]
+RewriteRule ^(config|confing|src|sql|scripts|\.git)(/|$) - [F,L,NC]
 RewriteRule ^(COPY_TRADING_README\.md|README\.md|\.env.*)$ - [F,L,NC]
 
 # API only routes to PHP bootstrap. Existing static pages and assets remain accessible.
