@@ -28,7 +28,7 @@
 <script>
 const message=document.querySelector('#message');
 const show=(s)=>{message.textContent=s;message.classList.remove('hidden')};
-const token=()=>localStorage.getItem('token')||localStorage.getItem('authToken')||'';
+const token=()=>localStorage.getItem('katsuki_token')||'';
 const api=async(path,options={})=>{
   const response=await fetch('/api'+path,{...options,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token(),...(options.headers||{})}});
   const body=await response.json().catch(()=>({error:'Réponse invalide'}));
