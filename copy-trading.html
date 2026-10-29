@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copy Trading | Katsuki Trading</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen">
+<header class="border-b border-white/10 px-5 py-5"><div class="max-w-5xl mx-auto flex items-center justify-between"><a href="index.html" class="font-bold text-xl">KATSUKI <span class="text-red-500">TRADING</span></a><span class="text-xs rounded-full border border-amber-500/50 px-3 py-1 text-amber-300">SIMULATION UNIQUEMENT</span></div></header>
+<main class="max-w-5xl mx-auto px-5 py-10 space-y-8">
+<div><h1 class="text-4xl font-black">Copy Trading</h1><p class="text-zinc-400 mt-3 max-w-2xl">Suivez une stratégie, ajustez vos limites et suspendez la copie à tout moment. Aucun ordre réel n'est passé depuis cette page.</p></div>
+<div id="message" role="status" aria-live="polite" class="hidden p-4 rounded-xl bg-zinc-800"></div>
+<section class="grid md:grid-cols-2 gap-5">
+<div class="bg-zinc-900 border border-white/10 rounded-2xl p-6 space-y-4">
+<h2 class="text-xl font-bold">Connexion</h2><p class="text-sm text-zinc-400">Connectez-vous sur le site principal. Le jeton de session est partagé avec cette page si vous utilisez le même navigateur.</p>
+<button id="load" class="bg-red-600 hover:bg-red-700 px-5 py-3 rounded-xl font-semibold">Charger mes traders</button>
+<a href="index.html" class="inline-block ml-2 underline text-zinc-300">Accueil</a></div>
+<div class="bg-zinc-900 border border-white/10 rounded-2xl p-6 space-y-4">
+<h2 class="text-xl font-bold">Paramètres de suivi</h2>
+<form id="follow" class="space-y-3">
+<label class="block text-sm">Trader maître <select id="trader" required class="block mt-1 w-full bg-zinc-800 rounded-xl p-3"></select></label>
+<label class="block text-sm">Allocation maximale (%) <input id="allocation" type="number" min="0.01" max="100" step="0.01" value="10" required class="block mt-1 w-full bg-zinc-800 rounded-xl p-3"></label>
+<label class="block text-sm">Perte maximale simulée (%) <input id="risk" type="number" min="0.01" max="100" step="0.01" value="5" required class="block mt-1 w-full bg-zinc-800 rounded-xl p-3"></label>
+<label class="flex gap-3 text-sm"><input id="consent" type="checkbox" required><span>Je comprends les risques de perte et j'accepte que la copie reste suspendue par défaut.</span></label>
+<button class="w-full bg-red-600 hover:bg-red-700 px-5 py-3 rounded-xl font-semibold">Créer le suivi (suspendu)</button>
+</form></div></section>
+<section><h2 class="text-2xl font-bold mb-4">Traders disponibles</h2><div id="traders" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div></section>
+<section><h2 class="text-2xl font-bold mb-4">Mes abonnements</h2><div id="subscriptions" class="space-y-3"></div></section>
+<section><h2 class="text-2xl font-bold mb-4">Historique simulé</h2><div id="events" class="space-y-2 text-sm"></div></section>
+<p class="text-sm text-zinc-500">Les performances passées ne préjugent pas des résultats futurs. Le risque de perte en capital existe. Le raccordement broker, les contrôles de capital et les obligations réglementaires restent à développer avant tout usage réel.</p>
+</main>
+<script>
+const message=document.querySelector('#message');
+const show=(s)=>{message.textContent=s;message.classList.remove('hidden')};
+const token=()=>localStorage.getItem('token')||localStorage.getItem('authToken')||'';
+const api=async(path,options={})=>{
+  const response=await fetch('/api'+path,{...options,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token(),...(options.headers||{})}});
+  const body=await response.json().catch(()=>({error:'Réponse invalide'}));
+  if(!response.ok)throw new Error(body.error||'Erreur réseau');
+  return body;
+};
+const el=(tag,text,classes='')=>{const e=document.createElement(tag);e.textContent=text;e.className=classes;return e};
+async function load(){
+  try{
+    if(!token())throw new Error('Veuillez vous connecter sur le site principal.');
+    const [traders,subs,events]=await Promise.all([api('/copy/traders'),api('/copy/subscriptions'),api('/copy/events')]);
+    const select=document.querySelector('#trader');select.replaceChildren();
+    const tbox=document.querySelector('#traders');tbox.replaceChildren();
+    traders.traders.filter(t=>t.status==='active').forEach(t=>{
+      const opt=el('option',t.display_name+' (#'+t.id+')');opt.value=t.id;select.append(opt);
+      const box=el('article','','bg-zinc-900 p-5 rounded-xl border border-white/10');
+      box.append(el('h3',t.display_name,'font-bold text-lg'),el('p',t.bio,'text-sm text-zinc-400 mt-2'),el('p',t.followers+' suiveur(s)','text-xs mt-3 text-red-400'));
+      tbox.append(box);
+    });
+    if(!traders.traders.length)tbox.append(el('p','Aucun trader maître disponible.'));
+    const sbox=document.querySelector('#subscriptions');sbox.replaceChildren();
+    subs.subscriptions.forEach(s=>{
+      const box=el('div','','bg-zinc-900 rounded-xl border border-white/10 p-4 flex flex-wrap gap-3 justify-between items-center');
+      box.append(el('span',s.display_name+' · allocation '+s.allocation_percent+'% · limite '+s.max_loss_percent+'% · '+s.status));
+      const btn=el('button',s.status==='active'?'Suspendre':'Activer la simulation','bg-zinc-700 hover:bg-red-700 px-4 py-2 rounded-lg text-sm');
+      btn.addEventListener('click',async()=>{try{await api('/copy/subscriptions/'+s.id,{method:'PATCH',body:JSON.stringify({status:s.status==='active'?'paused':'active'})});await load()}catch(e){show(e.message)}});
+      box.append(btn);sbox.append(box);
+    });
+    if(!subs.subscriptions.length)sbox.append(el('p','Aucun abonnement.'));
+    const ebox=document.querySelector('#events');ebox.replaceChildren();
+    events.events.forEach(e=>ebox.append(el('p',e.created_at+' · '+e.symbol+' · '+e.direction+' · entrée '+e.entry_price,'bg-zinc-900 p-3 rounded-lg')));
+    if(!events.events.length)ebox.append(el('p','Aucun signal simulé.'));
+  }catch(e){show(e.message)}
+}
+document.querySelector('#load').addEventListener('click',load);
+document.querySelector('#follow').addEventListener('submit',async event=>{
+  event.preventDefault();
+  try{
+    const result=await api('/copy/subscriptions',{method:'POST',body:JSON.stringify({
+      trader_id:Number(document.querySelector('#trader').value),
+      allocation_percent:Number(document.querySelector('#allocation').value),
+      max_loss_percent:Number(document.querySelector('#risk').value),
+      risk_consent:document.querySelector('#consent').checked
+    })});show(result.message);await load();
+  }catch(e){show(e.message)}
+});
+load();
+</script></body></html>
