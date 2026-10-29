@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katsuki Trading | L'Art de la Domination des Marchés</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Votre style existant (copiez-le depuis votre code initial) */
+        :root {
+            --primary: #ef4444;
+            --primary-dark: #991b1b;
+            --bg-dark: #0a0a0b;
+            --bg-card: rgba(23, 23, 23, 0.9);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(239, 68, 68, 0.3);
+        }
+        * { scrollbar-width: thin; scrollbar-color: var(--primary-dark) var(--bg-dark); }
+        *::-webkit-scrollbar { width: 6px; }
+        *::-webkit-scrollbar-track { background: var(--bg-dark); }
+        *::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 3px; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); overflow-x: hidden; cursor: default; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .katsuki-gradient { background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%); }
+        .katsuki-text { background: linear-gradient(135deg, #ef4444 0%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .katsuki-gradient-animated { background: linear-gradient(135deg, #ef4444 0%, #dc2626 25%, #f97316 50%, #dc2626 75%, #991b1b 100%); background-size: 200% 200%; animation: gradientShift 3s ease infinite; }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .card-glass { background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-subtle); }
+        .card-glass-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-glass-hover:hover { border-color: var(--border-glow); box-shadow: 0 20px 40px rgba(239, 68, 68, 0.1), 0 0 80px rgba(239, 68, 68, 0.05); transform: translateY(-4px); }
+        .nav-link { position: relative; padding: 0.5rem 0; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 50%; width: 0; height: 2px; background: var(--primary); transition: all 0.3s ease; transform: translateX(-50%); }
+        .nav-link:hover::after { width: 100%; }
+        .glow-button { position: relative; overflow: hidden; }
+        .glow-button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(239,68,68,0.4) 0%, transparent 70%); opacity: 0; transition: opacity 0.3s; }
+        .glow-button:hover::before { opacity: 1; }
+        .pulse-ring { animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulseRing { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 0.3; } 100% { transform: scale(1); opacity: 0.5; } }
+        .floating { animation: floating 3s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .floating-delayed { animation: floating 3s ease-in-out 1.5s infinite; }
+        [v-cloak] { display: none; }
+        .fade-in-up { opacity: 0; transform: translateY(30px); animation: fadeInUp 0.8s ease forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+        .stagger-7 { animation-delay: 0.7s; }
+        .stagger-8 { animation-delay: 0.8s; }
+        .philosophy-grid { background: radial-gradient(circle at center, rgba(239,68,68,0.15) 0%, transparent 70%); }
+        .timeline-line::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, #ef4444, #ef4444, transparent); transform: translateX(-50%); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.5s ease; }
+        .accordion-content.active { max-height: 1000px; padding-top: 1rem; padding-bottom: 1rem; }
+        .course-card, .service-card { display: flex; flex-direction: column; height: 100%; }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
+        @media (min-width: 1024px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .testimonials-grid { grid-template-columns: repeat(3, 1fr); } }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <!-- Navigation (identique) avec ajout du nom utilisateur si connecté -->
+        <nav class="fixed w-full z-50 transition-all duration-500" 
+             :class="{'card-glass border-b border-white/5': !scrolled, 'bg-black/95 border-b border-white/10 shadow-2xl': scrolled}">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <div class="flex items-center gap-3">
+                        <div class="w-14 h-14 katsuki-gradient-animated rounded-2xl flex items-center justify-center font-black text-2xl shadow-xl shadow-red-600/30 transform hover:rotate-12 transition-transform duration-300">K</div>
+                        <div class="flex flex-col leading-tight"><span class="text-lg font-black tracking-tighter uppercase italic">Katsuki</span><span class="text-red-500 text-sm font-bold tracking-widest uppercase">Trading</span></div>
+                    </div>
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a v-for="item in navItems" :key="item.id" @click="currentView = item.id" class="nav-link px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer relative overflow-hidden group" :class="{'text-red-500': currentView === item.id, 'text-gray-400 hover:text-white': currentView !== item.id}">
+                            <span class="relative z-10 flex items-center gap-2"><i :class="item.icon" class="text-xs"></i>{{item.label}}</span>
+                            <div v-if="currentView === item.id" class="absolute inset-0 bg-red-500/10 rounded-xl"></div>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <template v-if="!isLoggedIn">
+                            <button @click="showAuthModal = true" class="hidden md:inline-flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white px-8 py-3.5 rounded-2xl font-bold transition-all glow-button text-sm shadow-lg shadow-red-600/20 hover:shadow-red-600/40"><i class="fas fa-fire"></i><span>Rejoindre l'Élite</span></button>
+                        </template>
+                        <template v-else>
+                            <span class="text-sm text-gray-300 hidden md:inline">Bonjour, {{ user.name }}</span>
+                            <button @click="logout" class="hidden md:inline-flex items-center gap-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 px-5 py-2 rounded-xl text-sm transition"><i class="fas fa-sign-out-alt"></i>Déconnexion</button>
+                        </template>
+                        <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-3 hover:bg-white/5 rounded-xl transition"><i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'" class="text-xl"></i></button>
+                    </div>
+                </div>
+                <div v-if="mobileMenuOpen" class="md:hidden py-6 border-t border-white/5 animate-fadeIn">
+                    <a v-for="item in navItems" :key="item.id" @click="currentView = item.id; mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all cursor-pointer mb-2" :class="{'bg-red-600/10 text-red-500': currentView === item.id, 'text-gray-400 hover:bg-white/5': currentView !== item.id}">
+                        <i :class="item.icon" class="w-5 text-center"></i><span>{{item.label}}</span><span v-if="currentView === item.id" class="ml-auto w-2 h-2 bg-red-500 rounded-full pulse-ring"></span>
+                    </a>
+                    <template v-if="!isLoggedIn"><button @click="showAuthModal = true; mobileMenuOpen = false" class="w-full mt-4 bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-bold transition-all"><i class="fas fa-fire mr-2"></i>Rejoindre l'Élite</button></template>
+                    <template v-else><button @click="logout" class="w-full mt-4 bg-red-600/20 text-red-400 px-6 py-4 rounded-2xl font-bold"><i class="fas fa-sign-out-alt mr-2"></i>Déconnexion</button></template>
+                </div>
+            </div>
+        </nav>
+
+        <main class="relative">
+            <!-- HERO, PHILOSOPHY, FORMATION, PSYCHOLOGY, SERVICES sections (identique sauf les cours chargés depuis API) -->
+            <!-- Je reproduis uniquement la section Formation modifiée pour charger les cours depuis l'API et afficher la progression -->
+            <section v-if="currentView === 'formation'" class="pt-32 pb-32 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">Nos Programmes</div>
+                        <h2 class="text-5xl md:text-7xl font-black mb-8">L'Arsenal du <span class="katsuki-text">Trader Moderne</span></h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">Des formations structurées comme un parcours de combattant. Chaque niveau débloque de nouvelles compétences.</p>
+                    </div>
+
+                    <!-- Grille des cours depuis API -->
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div v-for="(course, index) in courses" :key="course.id" class="course-card card-glass card-glass-hover rounded-3xl overflow-hidden fade-in-up" :class="'stagger-' + (index + 2)">
+                            <div class="p-10 flex flex-col h-full">
+                                <div><div class="w-20 h-20 katsuki-gradient rounded-2xl flex items-center justify-center mb-8 text-3xl shadow-xl shadow-red-600/30"><i :class="course.icon"></i></div>
+                                <div class="mb-6"><div class="inline-block px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider mb-4" :class="course.level === 'Débutant' ? 'bg-green-500/20 text-green-400' : course.level === 'Avancé' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'">{{course.level}}</div><h3 class="text-3xl font-bold mb-4">{{course.title}}</h3><p class="text-gray-400 leading-relaxed text-sm mb-6">{{course.full_desc}}</p></div>
+                                <div class="space-y-4 mb-8"><h4 class="text-sm font-bold uppercase tracking-wider text-gray-300">Ce que vous allez maîtriser :</h4><div v-for="feature in course.features" :key="feature" class="flex items-center gap-3 text-sm"><div class="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0"><i class="fas fa-check text-red-500 text-xs"></i></div><span class="text-gray-300">{{feature}}</span></div></div></div>
+                                <div class="mt-auto space-y-3"><div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-clock text-red-500/70 w-5"></i><span>{{course.duration}}</span></div><div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-video text-red-500/70 w-5"></i><span>{{course.modules_count}} modules vidéo</span></div><div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-certificate text-red-500/70 w-5"></i><span>Certification incluse</span></div></div>
+                                <div class="mt-8 border-t border-white/5 pt-8"><div class="flex items-end justify-between mb-6"><div><span class="text-4xl font-black katsuki-text">{{course.price}}€</span><span v-if="course.original_price" class="text-lg text-gray-500 line-through ml-3">{{course.original_price}}€</span></div><span v-if="course.spots" class="text-xs text-red-400 font-semibold animate-pulse">{{course.spots}} places restantes</span></div>
+                                <button @click="enrollCourse(course.id)" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg shadow-red-600/20"><span class="flex items-center justify-center gap-2">S'inscrire <i class="fas fa-arrow-right text-sm"></i></span></button>
+                                <!-- Affichage progression si connecté -->
+                                <div v-if="isLoggedIn && courseProgress[course.id]" class="mt-4 text-center text-sm text-gray-400">Progression : {{ courseProgress[course.id].completed }} / {{ courseProgress[course.id].total }} modules</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             <!-- SECTION MANIFESTE / PHILOSOPHIE -->
+            <section v-if="currentView === 'philosophy' || currentView === 'home'" class="py-32 px-4 relative overflow-hidden">
+                <div class="absolute inset-0 philosophy-grid"></div>
+                <div class="max-w-7xl mx-auto relative">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
+                            Notre Manifeste
+                        </div>
+                        <h2 class="text-5xl md:text-7xl font-black mb-8">Le Code du <span class="katsuki-text">Guerrier des Marchés</span></h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
+                            Avant d'être une méthode, Katsuki est un état d'esprit. Une philosophie forgée dans l'adversité, 
+                            testée dans le chaos des marchés, et affinée par des années de pratique intense.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-5 gap-6 mb-20">
+                        <div v-for="(pillar, index) in pillars" :key="pillar.title"
+                             class="card-glass card-glass-hover rounded-3xl p-8 text-center fade-in-up cursor-pointer group"
+                             :class="'stagger-' + (index + 1)">
+                            <div class="w-20 h-20 katsuki-gradient rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg shadow-red-600/20 group-hover:scale-110 transition-transform duration-300">
+                                <i :class="pillar.icon"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4">{{pillar.title}}</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">{{pillar.shortDesc}}</p>
+                            <div class="mt-4 text-red-500 text-xs font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+                                En savoir plus →
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative timeline-line py-20">
+                        <div class="space-y-32">
+                            <div class="relative flex items-center fade-in-up">
+                                <div class="w-1/2 pr-16 text-right">
+                                    <div class="inline-block bg-red-500/10 border border-red-500/30 rounded-2xl px-6 py-4">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase 1</span>
+                                        <h4 class="text-2xl font-bold mt-2 mb-3">L'Éveil du Débutant</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md ml-auto">
+                                            Vous découvrez que le trading n'est pas un casino. Vous comprenez que chaque trade doit avoir une raison d'être, 
+                                            un plan d'entrée, un plan de sortie. C'est la fin de l'improvisation et le début de la conscience.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="absolute left-1/2 -translate-x-1/2 w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50 z-10"></div>
+                                <div class="w-1/2 pl-16"></div>
+                            </div>
+
+                            <div class="relative flex items-center fade-in-up stagger-2">
+                                <div class="w-1/2 pr-16"></div>
+                                <div class="absolute left-1/2 -translate-x-1/2 w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50 z-10"></div>
+                                <div class="w-1/2 pl-16">
+                                    <div class="inline-block bg-red-500/10 border border-red-500/30 rounded-2xl px-6 py-4">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase 2</span>
+                                        <h4 class="text-2xl font-bold mt-2 mb-3">La Discipline du Guerrier</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md">
+                                            Vous implémentez une routine. Vous tradez comme un athlète de haut niveau s'entraîne : 
+                                            avec constance, avec méthode, sans émotion. Chaque matin, même rituel. Chaque trade, même protocole.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-center fade-in-up stagger-4">
+                                <div class="w-1/2 pr-16 text-right">
+                                    <div class="inline-block bg-red-500/10 border border-red-500/30 rounded-2xl px-6 py-4">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase 3</span>
+                                        <h4 class="text-2xl font-bold mt-2 mb-3">La Maîtrise de Soi</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md ml-auto">
+                                            Le marché n'est plus un adversaire. C'est un miroir. Vous ne combattez plus les mouvements de prix, 
+                                            vous combattez vos propres démons intérieurs : la peur, l'avidité, l'impatience, l'ego. C'est là que tout bascule.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="absolute left-1/2 -translate-x-1/2 w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50 z-10"></div>
+                                <div class="w-1/2 pl-16"></div>
+                            </div>
+
+                            <div class="relative flex items-center fade-in-up stagger-6">
+                                <div class="w-1/2 pr-16"></div>
+                                <div class="absolute left-1/2 -translate-x-1/2 w-8 h-8 katsuki-gradient-animated rounded-full shadow-2xl shadow-red-500/50 z-10 flex items-center justify-center">
+                                    <i class="fas fa-crown text-xs"></i>
+                                </div>
+                                <div class="w-1/2 pl-16">
+                                    <div class="inline-block bg-red-500/20 border border-red-500/50 rounded-2xl px-6 py-4">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase Finale</span>
+                                        <h4 class="text-2xl font-bold mt-2 mb-3">L'Excellence Inconsciente</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md">
+                                            Vous ne réfléchissez plus. Vous exécutez. Comme un artiste martial qui ne pense plus aux mouvements, 
+                                            vous laissez vos années d'entraînement s'exprimer à travers vous. Le trading devient une extension de votre être.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION FORMATION AVEC CARTES PLEINES -->
+            <section v-if="currentView === 'formation'" class="pt-32 pb-32 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
+                            Nos Programmes
+                        </div>
+                        <h2 class="text-5xl md:text-7xl font-black mb-8">L'Arsenal du <span class="katsuki-text">Trader Moderne</span></h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
+                            Des formations structurées comme un parcours de combattant. Chaque niveau débloque de nouvelles compétences, 
+                            de nouvelles perspectives, et vous rapproche de la maîtrise ultime des marchés financiers.
+                        </p>
+                    </div>
+
+                    <div class="card-glass rounded-3xl p-12 mb-16 fade-in-up stagger-1">
+                        <h3 class="text-3xl font-bold mb-8 text-center">Pourquoi Nos Formations Sont <span class="katsuki-text">Différentes</span></h3>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-brain text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Approche Neuropsychologique</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Nous intégrons les neurosciences pour comprendre comment votre cerveau réagit face au risque et à la récompense. Vous apprendrez à reconnaître et neutraliser vos biais cognitifs.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-dumbbell text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Entraînement Progressif</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Comme un athlète, vous progressez par paliers. Chaque module valide des compétences avant de passer au suivant. Pas de saut, pas de raccourci.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-users text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Communauté d'Élite</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Vous n'êtes pas seul. Intégrez un cercle fermé de traders partageant les mêmes standards d'excellence. Échangez, progressez, challengez-vous mutuellement.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-chart-line text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Suivi Personnalisé</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Un mentor dédié analyse vos performances, identifie vos points faibles, et ajuste votre parcours. Vous n'êtes pas un numéro, vous êtes un projet d'excellence.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div v-for="(course, index) in courses" :key="course.title" 
+                             class="course-card card-glass card-glass-hover rounded-3xl overflow-hidden fade-in-up"
+                             :class="'stagger-' + (index + 2)">
+                            <div class="p-10 flex flex-col h-full">
+                                <div>
+                                    <div class="w-20 h-20 katsuki-gradient rounded-2xl flex items-center justify-center mb-8 text-3xl shadow-xl shadow-red-600/30">
+                                        <i :class="course.icon"></i>
+                                    </div>
+                                    <div class="mb-6">
+                                        <div class="inline-block px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider mb-4"
+                                             :class="course.level === 'Débutant' ? 'bg-green-500/20 text-green-400' : course.level === 'Avancé' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'">
+                                            {{course.level}}
+                                        </div>
+                                        <h3 class="text-3xl font-bold mb-4">{{course.title}}</h3>
+                                        <p class="text-gray-400 leading-relaxed text-sm mb-6">{{course.fullDesc}}</p>
+                                    </div>
+                                    <div class="space-y-4 mb-8">
+                                        <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300">Ce que vous allez maîtriser :</h4>
+                                        <div v-for="feature in course.features" :key="feature" 
+                                             class="flex items-center gap-3 text-sm">
+                                            <div class="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-check text-red-500 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-300">{{feature}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-auto space-y-3">
+                                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                                        <i class="fas fa-clock text-red-500/70 w-5"></i>
+                                        <span>{{course.duration}}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                                        <i class="fas fa-video text-red-500/70 w-5"></i>
+                                        <span>{{course.modules}} modules vidéo</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-sm text-gray-400">
+                                        <i class="fas fa-certificate text-red-500/70 w-5"></i>
+                                        <span>Certification incluse</span>
+                                    </div>
+                                </div>
+                                <div class="mt-8 border-t border-white/5 pt-8">
+                                    <div class="flex items-end justify-between mb-6">
+                                        <div>
+                                            <span class="text-4xl font-black katsuki-text">{{course.price}}</span>
+                                            <span v-if="course.originalPrice" class="text-lg text-gray-500 line-through ml-3">{{course.originalPrice}}</span>
+                                        </div>
+                                        <span v-if="course.spots" class="text-xs text-red-400 font-semibold animate-pulse">
+                                            {{course.spots}} places restantes
+                                        </span>
+                                    </div>
+                                    <button class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg shadow-red-600/20 hover:shadow-red-600/40">
+                                        <span class="flex items-center justify-center gap-2">
+                                            Commencer Maintenant
+                                            <i class="fas fa-arrow-right text-sm"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION TÉMOIGNAGES - GRILLE STATIQUE CENTRÉE (plus de défilement automatique) -->
+            <section class="py-32 px-4 bg-black/30 relative overflow-hidden">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <h2 class="text-5xl md:text-7xl font-black mb-6">Ils Ont <span class="katsuki-text">Transformé</span> Leur Trading</h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto">
+                            Des centaines de traders ont déjà franchi le pas. Voici leurs histoires, sans filtre, sans artifice.
+                        </p>
+                    </div>
+
+                    <!-- Grille responsive : les témoignages sont tous visibles, sans animation de défilement -->
+                    <div class="testimonials-grid">
+                        <div v-for="testimonial in testimonials" :key="testimonial.name"
+                             class="card-glass card-glass-hover rounded-3xl p-10 flex flex-col h-full">
+                            <div class="flex items-center gap-1 mb-6">
+                                <i v-for="star in 5" :key="star" class="fas fa-star text-yellow-500 text-sm"></i>
+                            </div>
+                            <p class="text-gray-300 leading-relaxed mb-8 italic flex-grow">"{{testimonial.quote}}"</p>
+                            <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                                <div class="w-14 h-14 katsuki-gradient rounded-2xl flex items-center justify-center font-bold text-xl">
+                                    {{testimonial.initials}}
+                                </div>
+                                <div>
+                                    <div class="font-bold">{{testimonial.name}}</div>
+                                    <div class="text-sm text-gray-500">{{testimonial.role}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION PSYCHOLOGIE -->
+            <section v-if="currentView === 'psychology'" class="pt-32 pb-32 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
+                            Le Mental
+                        </div>
+                        <h2 class="text-5xl md:text-7xl font-black mb-8">La Psychologie du <span class="katsuki-text">Vainqueur</span></h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
+                            Le trading est un sport de combat mental. Votre pire ennemi n'est pas le marché, 
+                            c'est vous-même. Apprenez à dompter votre esprit pour dompter les marchés.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-12 mb-20">
+                        <div class="card-glass rounded-3xl p-10 border-red-500/20 fade-in-up">
+                            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fas fa-skull text-red-500"></i> Anatomie d'un Échec</h3>
+                            <div class="space-y-6">
+                                <div class="flex gap-4"><span class="text-red-500 font-black text-2xl flex-shrink-0">01</span><div><h4 class="font-bold text-lg mb-2">L'Excès de Confiance Post-Gain</h4><p class="text-gray-400 text-sm">Après une série gagnante, le trader augmente ses risques, pense avoir "compris" le marché, et oublie que chaque trade est indépendant. L'euphorie est le prélude à la chute.</p></div></div>
+                                <div class="flex gap-4"><span class="text-red-500 font-black text-2xl flex-shrink-0">02</span><div><h4 class="font-bold text-lg mb-2">La Vengeance Après une Perte</h4><p class="text-gray-400 text-sm">Le "revenge trading" : vouloir se refaire immédiatement après une perte. Sans analyse, sans plan, juste l'émotion brute. C'est la voie royale vers la ruine du compte.</p></div></div>
+                                <div class="flex gap-4"><span class="text-red-500 font-black text-2xl flex-shrink-0">03</span><div><h4 class="font-bold text-lg mb-2">La Paralysie par l'Analyse</h4><p class="text-gray-400 text-sm">Trop d'indicateurs, trop d'analyses, trop d'avis extérieurs. Le trader ne prend plus de décision, rate des opportunités, et finit par entrer au pire moment, épuisé mentalement.</p></div></div>
+                            </div>
+                        </div>
+                        <div class="card-glass rounded-3xl p-10 border-green-500/20 fade-in-up stagger-2">
+                            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fas fa-crown text-green-400"></i> Anatomie d'un Succès</h3>
+                            <div class="space-y-6">
+                                <div class="flex gap-4"><span class="text-green-400 font-black text-2xl flex-shrink-0">01</span><div><h4 class="font-bold text-lg mb-2">La Routine du Matin</h4><p class="text-gray-400 text-sm">Sport, méditation, revue des marchés. Le trader se prépare comme un athlète. Il ne trade pas pour ressentir des émotions, il trade parce qu'il a un plan à exécuter.</p></div></div>
+                                <div class="flex gap-4"><span class="text-green-400 font-black text-2xl flex-shrink-0">02</span><div><h4 class="font-bold text-lg mb-2">L'Acceptation de la Perte</h4><p class="text-gray-400 text-sm">Le trader gagnant sait qu'il va perdre. Il a intégré la perte dans son business plan. Une perte n'est pas un échec, c'est un coût opérationnel. Il coupe vite et passe au trade suivant.</p></div></div>
+                                <div class="flex gap-4"><span class="text-green-400 font-black text-2xl flex-shrink-0">03</span><div><h4 class="font-bold text-lg mb-2">Le Journal de Trading</h4><p class="text-gray-400 text-sm">Chaque trade est documenté : setup, émotion, résultat, leçon. Le trader gagnant étudie ses trades comme un scientifique étudie ses expériences : sans ego, avec curiosité.</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fade-in-up stagger-4">
+                        <h3 class="text-3xl font-bold mb-10 text-center">Questions Fréquentes sur le <span class="katsuki-text">Mental</span></h3>
+                        <div class="space-y-4 max-w-4xl mx-auto">
+                            <div v-for="(faq, idx) in psychologyFAQ" :key="idx" class="card-glass rounded-2xl overflow-hidden">
+                                <div @click="faq.open = !faq.open" class="p-6 flex justify-between items-center cursor-pointer hover:bg-white/5 transition">
+                                    <h4 class="text-lg font-semibold">{{faq.question}}</h4>
+                                    <i :class="faq.open ? 'fas fa-minus' : 'fas fa-plus'" class="text-red-500 transition-transform duration-300" :style="{transform: faq.open ? 'rotate(180deg)' : 'rotate(0deg)'}"></i>
+                                </div>
+                                <div class="accordion-content px-6" :class="{ active: faq.open }">
+                                    <p class="text-gray-400 leading-relaxed pb-2">{{faq.answer}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION SERVICES AVEC CARTES PLEINES -->
+            <section v-if="currentView === 'services'" class="pt-32 pb-32 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">Services Premium</div>
+                        <h2 class="text-5xl md:text-7xl font-black mb-8">Des Outils à la Hauteur de Vos <span class="katsuki-text">Ambitions</span></h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">Au-delà de la formation, nous mettons à votre disposition des technologies de pointe pour automatiser, analyser et optimiser votre trading quotidien.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div v-for="service in services" :key="service.title" class="service-card card-glass card-glass-hover rounded-3xl p-10 flex flex-col h-full fade-in-up">
+                            <div class="flex items-start gap-6 mb-8">
+                                <div class="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 text-3xl" :class="service.color"><i :class="service.icon"></i></div>
+                                <div><h3 class="text-2xl font-bold mb-3">{{service.title}}</h3><p class="text-gray-400 leading-relaxed text-sm">{{service.fullDesc}}</p></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-8">
+                                <div v-for="feature in service.features" :key="feature" class="flex items-center gap-2 text-sm bg-white/5 rounded-xl p-3"><i class="fas fa-check-circle text-green-500 text-xs"></i><span class="text-gray-300">{{feature}}</span></div>
+                            </div>
+                            <div class="mt-auto border-t border-white/5 pt-8">
+                                <div class="flex items-center justify-between"><div><span class="text-3xl font-black katsuki-text">{{service.price}}</span><p class="text-xs text-gray-500 mt-1">{{service.billing}}</p></div><button class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-2xl font-bold transition-all transform hover:scale-105">Souscrire</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+                       <!-- CTA FINAL -->
+            <section class="py-32 px-4 relative overflow-hidden">
+                <div class="absolute inset-0 katsuki-gradient opacity-5"></div>
+                <div class="max-w-4xl mx-auto text-center relative z-10 fade-in-up">
+                    <h2 class="text-5xl md:text-7xl font-black mb-10">Prêt à Devenir <span class="katsuki-text">Inarrêtable</span> ?</h2>
+                    <p class="text-gray-400 text-xl mb-12 leading-relaxed max-w-2xl mx-auto">Le marché continuera de tourner demain. La question est : serez-vous le même trader demain, ou aurez-vous fait le premier pas vers votre transformation ?</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-5"><button @click="showAuthModal = true" class="bg-red-600 hover:bg-red-700 text-white px-12 py-5 rounded-2xl text-xl font-bold transition-all transform hover:scale-105 shadow-2xl shadow-red-600/30"><i class="fas fa-fire mr-3"></i> Rejoindre l'Élite Maintenant</button><button @click="currentView = 'formation'" class="border-2 border-white/20 hover:border-red-500/50 px-12 py-5 rounded-2xl text-xl font-bold transition-all">Voir les Formations</button></div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="border-t border-white/5 bg-black/40">
+            <div class="max-w-7xl mx-auto px-4 py-20">
+                <div class="grid md:grid-cols-5 gap-12 mb-16">
+                    <div class="md:col-span-2"><div class="flex items-center gap-3 mb-6"><div class="w-12 h-12 katsuki-gradient rounded-xl flex items-center justify-center font-black text-lg">K</div><span class="text-xl font-black italic">Katsuki <span class="text-red-500">Trading</span></span></div><p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-md">Nous formons l'élite des traders depuis 2017. Notre méthode, forgée dans le feu de l'expérience réelle des marchés, a transformé des milliers de traders à travers le monde.</p><div class="flex gap-3"><a v-for="social in socials" :key="social.name" :href="social.url" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-red-600/20 hover:text-red-500 transition-all duration-300 text-lg"><i :class="social.icon"></i></a></div></div>
+                    <div><h5 class="font-bold mb-6 text-sm uppercase tracking-wider">Navigation</h5><div class="space-y-3"><div v-for="item in navItems" :key="item.id" @click="currentView = item.id" class="text-gray-400 text-sm hover:text-red-500 cursor-pointer transition flex items-center gap-2"><i :class="item.icon" class="text-xs w-4"></i>{{item.label}}</div></div></div>
+                    <div><h5 class="font-bold mb-6 text-sm uppercase tracking-wider">Ressources</h5><div class="space-y-3 text-gray-400 text-sm"><div class="hover:text-red-500 cursor-pointer transition">Blog Stratégique</div><div class="hover:text-red-500 cursor-pointer transition">Webinaires Gratuits</div><div class="hover:text-red-500 cursor-pointer transition">E-books Exclusifs</div><div class="hover:text-red-500 cursor-pointer transition">Glossaire Trading</div><div class="hover:text-red-500 cursor-pointer transition">Calendrier Économique</div></div></div>
+                    <div><h5 class="font-bold mb-6 text-sm uppercase tracking-wider">Contact</h5><div class="space-y-4 text-sm text-gray-400"><div class="flex items-center gap-3"><i class="fas fa-envelope text-red-500 w-5"></i><span>elite@katsukitrading.com</span></div><div class="flex items-center gap-3"><i class="fas fa-headset text-red-500 w-5"></i><span>Support 7j/7</span></div><div class="flex items-center gap-3"><i class="fas fa-shield-halved text-red-500 w-5"></i><span>Paiement Sécurisé</span></div></div></div>
+                </div>
+                <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4"><p class="text-sm text-gray-500">&copy; 2025 Katsuki Trading. Tous droits réservés. Le trading comporte des risques importants.</p><div class="flex gap-8 text-sm text-gray-500"><span class="hover:text-red-500 cursor-pointer transition">Conditions Générales</span><span class="hover:text-red-500 cursor-pointer transition">Politique de Confidentialité</span><span class="hover:text-red-500 cursor-pointer transition">Mentions Légales</span><span class="hover:text-red-500 cursor-pointer transition">Avertissement Risques</span></div></div>
+            </div>
+        </footer>
+            <!-- Les autres sections (Psychologie, Services, Philosophy, Témoignages) restent identiques, mais vous pouvez aussi les alimenter via API -->
+            <!-- Pour gagner de la place, je ne les recopie pas entièrement ici, mais conservez votre code existant. -->
+            <!-- Pensez simplement à remplacer les données statiques des cours et témoignages par des appels API si nécessaire -->
+        </main>
+
+        <!-- Modal d'authentification (avec onglets Connexion / Inscription) -->
+        <div v-if="showAuthModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" @click.self="showAuthModal = false">
+            <div class="card-glass rounded-3xl p-8 w-full max-w-md fade-in-up relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 katsuki-gradient-animated"></div>
+                <div class="flex justify-between items-center mb-6"><div><h3 class="text-2xl font-black">{{ authMode === 'login' ? 'Connexion' : 'Inscription' }}</h3><p class="text-gray-400 text-sm">{{ authMode === 'login' ? 'Accédez à votre compte élite' : 'Créez votre compte gratuitement' }}</p></div><button @click="showAuthModal = false" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button></div>
+                <form @submit.prevent="authMode === 'login' ? login() : register()" class="space-y-5">
+                    <div v-if="authMode === 'register'"><label class="text-sm text-gray-400 block mb-2 font-medium">Nom complet</label><input v-model="registerName" type="text" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="Jean Dupont"></div>
+                    <div><label class="text-sm text-gray-400 block mb-2 font-medium">Email</label><input v-model="authEmail" type="email" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="email@exemple.com"></div>
+                    <div><label class="text-sm text-gray-400 block mb-2 font-medium">Mot de passe</label><input v-model="authPassword" type="password" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="••••••••"></div>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-2xl font-bold transition-all">{{ authMode === 'login' ? 'Se connecter' : 'Créer mon compte' }}</button>
+                </form>
+                <div class="mt-6 text-center text-sm text-gray-400">{{ authMode === 'login' ? "Pas encore membre ?" : "Déjà un compte ?" }} <span @click="authMode = authMode === 'login' ? 'register' : 'login'" class="text-red-400 font-bold cursor-pointer hover:underline">{{ authMode === 'login' ? 'Créer un compte' : 'Se connecter' }}</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api'; // Serveur PHP sur port 3000
+
+        const { createApp, ref, reactive, onMounted } = Vue;
+        createApp({
+            setup() {
+                const currentView = ref('home');
+                const scrolled = ref(false);
+                const mobileMenuOpen = ref(false);
+                const showAuthModal = ref(false);
+                const authMode = ref('login');
+                const authEmail = ref('');
+                const authPassword = ref('');
+                const registerName = ref('');
+                const isLoggedIn = ref(false);
+                const user = ref({});
+                const courses = ref([]);
+                const courseProgress = ref({});
+                const token = ref(localStorage.getItem('katsuki_token') || '');
+
+                const navItems = [
+                    { id: 'home', label: 'Accueil', icon: 'fas fa-home' },
+                    { id: 'formation', label: 'Formations', icon: 'fas fa-graduation-cap' },
+                    { id: 'psychology', label: 'Mental', icon: 'fas fa-brain' },
+                    { id: 'services', label: 'Services', icon: 'fas fa-cogs' },
+                    { id: 'philosophy', label: 'Philosophie', icon: 'fas fa-scroll' }
+                ];
+
+                // Fonctions API
+                async function apiCall(endpoint, method = 'GET', data = null) {
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token.value) headers['Authorization'] = `Bearer ${token.value}`;
+                    const config = { method, headers };
+                    if (data) config.body = JSON.stringify(data);
+                    const response = await fetch(`${API_BASE}${endpoint}`, config);
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(err.error || 'Erreur serveur');
+                    }
+                    return response.json();
+                }
+
+                async function login() {
+                    try {
+                        const res = await apiCall('/login', 'POST', { email: authEmail.value, password: authPassword.value });
+                        token.value = res.token;
+                        localStorage.setItem('katsuki_token', res.token);
+                        user.value = res.user;
+                        isLoggedIn.value = true;
+                        showAuthModal.value = false;
+                        await loadCourses();
+                        await loadUserProgress();
+                        alert(`Bienvenue ${user.value.name} !`);
+                    } catch (e) {
+                        alert(e.message);
+                    }
+                }
+
+                async function register() {
+                    try {
+                        const res = await apiCall('/register', 'POST', { email: authEmail.value, password: authPassword.value, name: registerName.value });
+                        token.value = res.token;
+                        localStorage.setItem('katsuki_token', res.token);
+                        user.value = res.user;
+                        isLoggedIn.value = true;
+                        showAuthModal.value = false;
+                        await loadCourses();
+                        alert('Inscription réussie ! Connecté automatiquement.');
+                    } catch (e) {
+                        alert(e.message);
+                    }
+                }
+
+                function logout() {
+                    localStorage.removeItem('katsuki_token');
+                    token.value = '';
+                    isLoggedIn.value = false;
+                    user.value = {};
+                    currentView.value = 'home';
+                }
+
+                async function loadCourses() {
+                    try {
+                        const data = await apiCall('/courses');
+                        courses.value = data;
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                async function loadUserProgress() {
+                    if (!isLoggedIn.value) return;
+                    try {
+                        const progress = await apiCall('/progress');
+                        // Grouper par course
+                        const grouped = {};
+                        for (let p of progress) {
+                            if (!grouped[p.course_id]) grouped[p.course_id] = { completed: 0, total: 0 };
+                            if (p.completed) grouped[p.course_id].completed++;
+                        }
+                        // Pour chaque course, récupérer total modules
+                        for (let course of courses.value) {
+                            const modules = await apiCall(`/courses/${course.id}/modules`);
+                            grouped[course.id] = grouped[course.id] || { completed: 0, total: modules.length };
+                            grouped[course.id].total = modules.length;
+                        }
+                        courseProgress.value = grouped;
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                async function enrollCourse(courseId) {
+                    if (!isLoggedIn.value) {
+                        showAuthModal.value = true;
+                        return;
+                    }
+                    alert('Inscription au cours disponible prochainement. (Version démo)');
+                }
+
+                // Vérification du token au démarrage
+                async function checkAuth() {
+                    if (!token.value) return;
+                    try {
+                        const userData = await apiCall('/user');
+                        user.value = userData;
+                        isLoggedIn.value = true;
+                        await loadCourses();
+                        await loadUserProgress();
+                    } catch (e) {
+                        localStorage.removeItem('katsuki_token');
+                        token.value = '';
+                    }
+                }
+
+                const handleScroll = () => { scrolled.value = window.scrollY > 30; };
+                onMounted(() => {
+                    window.addEventListener('scroll', handleScroll);
+                    checkAuth();
+                });
+
+                return { currentView, scrolled, mobileMenuOpen, showAuthModal, authMode, authEmail, authPassword, registerName, isLoggedIn, user, courses, courseProgress, navItems, login, register, logout, enrollCourse };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
