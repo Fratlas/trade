@@ -63,7 +63,12 @@
         .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
         @media (min-width: 1024px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 1280px) { .testimonials-grid { grid-template-columns: repeat(3, 1fr); } }
-    </style>
+      .card-glass {box-shadow:0 16px 64px rgba(0,0,0,.30)}
+  button,a { -webkit-tap-highlight-color:transparent }
+  button:focus-visible,a:focus-visible,input:focus-visible { outline:2px solid #fb7185;outline-offset:3px }
+  .katsuki-gradient-animated {animation-duration:8s}
+  @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
     <div id="app" v-cloak>
@@ -88,12 +93,12 @@
                         </template>
                         <template v-else>
                             <span class="text-sm text-gray-300 hidden md:inline">Bonjour, {{ user.name }}</span>
-                            <button @click="logout" class="hidden md:inline-flex items-center gap-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 px-5 py-2 rounded-xl text-sm transition"><i class="fas fa-sign-out-alt"></i>Déconnexion</button>
+                            <a v-if="user.role === 'admin'" href="admin.html" class="hidden md:inline-flex text-red-300 font-semibold">Administration</a><button @click="logout" class="hidden md:inline-flex items-center gap-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 px-5 py-2 rounded-xl text-sm transition"><i class="fas fa-sign-out-alt"></i>Déconnexion</button>
                         </template>
                         <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-3 hover:bg-white/5 rounded-xl transition"><i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'" class="text-xl"></i></button>
                     </div>
                 </div>
-                <div v-if="mobileMenuOpen" class="md:hidden py-6 border-t border-white/5 animate-fadeIn"><a href="copy-trading.html" class="block py-3 px-4 text-red-400 font-bold">Copy Trading</a><a href="medias.html" class="block py-3 px-4 text-zinc-200 font-bold">Médias & Vidéos</a>
+                <div v-if="mobileMenuOpen" class="md:hidden py-6 border-t border-white/5 animate-fadeIn"><a v-if="isLoggedIn && user.role==='admin'" href="admin.html" class="block py-3 px-4 text-red-300 font-bold">Administration</a><a href="copy-trading.html" class="block py-3 px-4 text-red-400 font-bold">Copy Trading</a><a href="medias.html" class="block py-3 px-4 text-zinc-200 font-bold">Médias & Vidéos</a>
                     <a v-for="item in navItems" :key="item.id" @click="currentView = item.id; mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all cursor-pointer mb-2" :class="{'bg-red-600/10 text-red-500': currentView === item.id, 'text-gray-400 hover:bg-white/5': currentView !== item.id}">
                         <i :class="item.icon" class="w-5 text-center"></i><span>{{item.label}}</span><span v-if="currentView === item.id" class="ml-auto w-2 h-2 bg-red-500 rounded-full pulse-ring"></span>
                     </a>
@@ -495,11 +500,11 @@
             <div class="card-glass rounded-3xl p-8 w-full max-w-md fade-in-up relative overflow-hidden">
                 <div class="absolute top-0 left-0 right-0 h-1 katsuki-gradient-animated"></div>
                 <div class="flex justify-between items-center mb-6"><div><h3 class="text-2xl font-black">{{ authMode === 'login' ? 'Connexion' : 'Inscription' }}</h3><p class="text-gray-400 text-sm">{{ authMode === 'login' ? 'Accédez à votre compte élite' : 'Créez votre compte gratuitement' }}</p></div><button @click="showAuthModal = false" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button></div>
-                <form @submit.prevent="authMode === 'login' ? login() : register()" class="space-y-5">
+                <form @submit.prevent="authMode === 'login' ? login() : register()" class="space-y-5"><p v-if="authError" role="alert" class="text-red-200 bg-red-950/70 border border-red-500/40 p-3 rounded-xl text-sm">{{ authError }}</p>
                     <div v-if="authMode === 'register'"><label class="text-sm text-gray-400 block mb-2 font-medium">Nom complet</label><input v-model="registerName" type="text" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="Jean Dupont"></div>
                     <div><label class="text-sm text-gray-400 block mb-2 font-medium">Email</label><input v-model="authEmail" type="email" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="email@exemple.com"></div>
-                    <div><label class="text-sm text-gray-400 block mb-2 font-medium">Mot de passe</label><input v-model="authPassword" type="password" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="••••••••"></div>
-                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-2xl font-bold transition-all">{{ authMode === 'login' ? 'Se connecter' : 'Créer mon compte' }}</button>
+                    <div><label class="text-sm text-gray-400 block mb-2 font-medium">Mot de passe</label><input v-model="authPassword" type="password" minlength="8" autocomplete="current-password" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="••••••••"></div>
+                    <button type="submit" :disabled="authBusy" class="w-full disabled:opacity-50 bg-red-600 hover:bg-red-700 text-white py-3 rounded-2xl font-bold transition-all">{{ authBusy ? 'Traitement...' : (authMode === 'login' ? 'Se connecter' : 'Créer mon compte') }}</button>
                 </form>
                 <div class="mt-6 text-center text-sm text-gray-400">{{ authMode === 'login' ? "Pas encore membre ?" : "Déjà un compte ?" }} <span @click="authMode = authMode === 'login' ? 'register' : 'login'" class="text-red-400 font-bold cursor-pointer hover:underline">{{ authMode === 'login' ? 'Créer un compte' : 'Se connecter' }}</span></div>
             </div>
@@ -507,7 +512,7 @@
     </div>
 
     <script>
-        const API_BASE = 'http://localhost:3000/api'; // Serveur PHP sur port 3000
+        const API_BASE = '/api'; // API PHP du même domaine
 
         const { createApp, ref, reactive, onMounted } = Vue;
         createApp({
@@ -521,6 +526,8 @@
                 const authPassword = ref('');
                 const registerName = ref('');
                 const isLoggedIn = ref(false);
+                const authError = ref('');
+                const authBusy = ref(false);
                 const user = ref({});
                 const courses = ref([]);
                 const courseProgress = ref({});
@@ -549,6 +556,7 @@
                 }
 
                 async function login() {
+                    authError.value = ''; authBusy.value = true;
                     try {
                         const res = await apiCall('/login', 'POST', { email: authEmail.value, password: authPassword.value });
                         token.value = res.token;
@@ -558,13 +566,14 @@
                         showAuthModal.value = false;
                         await loadCourses();
                         await loadUserProgress();
-                        alert(`Bienvenue ${user.value.name} !`);
+                        authPassword.value = '';
                     } catch (e) {
-                        alert(e.message);
-                    }
+                        authError.value = e.message;
+                    } finally { authBusy.value = false; }
                 }
 
                 async function register() {
+                    authError.value = ''; authBusy.value = true;
                     try {
                         const res = await apiCall('/register', 'POST', { email: authEmail.value, password: authPassword.value, name: registerName.value });
                         token.value = res.token;
@@ -573,10 +582,10 @@
                         isLoggedIn.value = true;
                         showAuthModal.value = false;
                         await loadCourses();
-                        alert('Inscription réussie ! Connecté automatiquement.');
+                        authPassword.value = '';
                     } catch (e) {
-                        alert(e.message);
-                    }
+                        authError.value = e.message;
+                    } finally { authBusy.value = false; }
                 }
 
                 function logout() {
@@ -647,7 +656,7 @@
                     checkAuth();
                 });
 
-                return { currentView, scrolled, mobileMenuOpen, showAuthModal, authMode, authEmail, authPassword, registerName, isLoggedIn, user, courses, courseProgress, navItems, login, register, logout, enrollCourse };
+                return { currentView, scrolled, mobileMenuOpen, showAuthModal, authMode, authEmail, authPassword, registerName, isLoggedIn, user, courses, courseProgress, navItems, login, register, logout, enrollCourse, authError, authBusy };
             }
         }).mount('#app');
     </script>
