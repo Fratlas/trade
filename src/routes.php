@@ -43,6 +43,9 @@ try {
     elseif ($requestMethod==='GET' && preg_match('#^/courses/(\\d+)/progress$#',$requestUri,$m)) {
         $auth=AuthMiddleware::authenticate(); ProgressController::getCourseProgress((int)$auth['user_id'],(int)$m[1]);
     }
+    elseif ($requestMethod==='GET' && $requestUri==='/admin/dashboard') {
+        $auth=AuthMiddleware::authenticate(); AdminController::dashboard((int)$auth['user_id']);
+    }
     elseif ($requestMethod==='GET' && $requestUri==='/copy/traders') {
         AuthMiddleware::authenticate(); CopyTradingController::traders();
     }
