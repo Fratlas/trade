@@ -76,7 +76,7 @@
                         <div class="w-14 h-14 katsuki-gradient-animated rounded-2xl flex items-center justify-center font-black text-2xl shadow-xl shadow-red-600/30 transform hover:rotate-12 transition-transform duration-300">K</div>
                         <div class="flex flex-col leading-tight"><span class="text-lg font-black tracking-tighter uppercase italic">Katsuki</span><span class="text-red-500 text-sm font-bold tracking-widest uppercase">Trading</span></div>
                     </div>
-                    <div class="hidden md:flex items-center space-x-1"><a href="copy-trading.html" class="nav-link px-4 py-3 rounded-xl text-sm font-bold text-red-400 hover:text-white">Copy Trading</a>
+                    <div class="hidden md:flex items-center space-x-1"><a href="copy-trading.html" class="nav-link px-3 py-3 rounded-xl text-sm font-bold text-red-400 hover:text-white">Copy Trading</a><a href="medias.html" class="nav-link px-3 py-3 rounded-xl text-sm font-bold text-zinc-200 hover:text-red-400">Médias & Vidéos</a>
                         <a v-for="item in navItems" :key="item.id" @click="currentView = item.id" class="nav-link px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer relative overflow-hidden group" :class="{'text-red-500': currentView === item.id, 'text-gray-400 hover:text-white': currentView !== item.id}">
                             <span class="relative z-10 flex items-center gap-2"><i :class="item.icon" class="text-xs"></i>{{item.label}}</span>
                             <div v-if="currentView === item.id" class="absolute inset-0 bg-red-500/10 rounded-xl"></div>
@@ -93,7 +93,7 @@
                         <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-3 hover:bg-white/5 rounded-xl transition"><i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'" class="text-xl"></i></button>
                     </div>
                 </div>
-                <div v-if="mobileMenuOpen" class="md:hidden py-6 border-t border-white/5 animate-fadeIn"><a href="copy-trading.html" class="block py-3 px-4 text-red-400 font-bold">Copy Trading</a>
+                <div v-if="mobileMenuOpen" class="md:hidden py-6 border-t border-white/5 animate-fadeIn"><a href="copy-trading.html" class="block py-3 px-4 text-red-400 font-bold">Copy Trading</a><a href="medias.html" class="block py-3 px-4 text-zinc-200 font-bold">Médias & Vidéos</a>
                     <a v-for="item in navItems" :key="item.id" @click="currentView = item.id; mobileMenuOpen = false" class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all cursor-pointer mb-2" :class="{'bg-red-600/10 text-red-500': currentView === item.id, 'text-gray-400 hover:bg-white/5': currentView !== item.id}">
                         <i :class="item.icon" class="w-5 text-center"></i><span>{{item.label}}</span><span v-if="currentView === item.id" class="ml-auto w-2 h-2 bg-red-500 rounded-full pulse-ring"></span>
                     </a>
