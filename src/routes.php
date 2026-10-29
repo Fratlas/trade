@@ -55,6 +55,9 @@ try {
     elseif ($requestMethod==='PATCH' && preg_match('#^/copy/subscriptions/(\\d+)$#',$requestUri,$m)) {
         $auth=AuthMiddleware::authenticate(); CopyTradingController::setStatus((int)$auth['user_id'],(int)$m[1],$data);
     }
+    elseif ($requestMethod==='POST' && $requestUri==='/copy/events') {
+        $auth=AuthMiddleware::authenticate(); SimulationController::publish((int)$auth['user_id'],$data);
+    }
     elseif ($requestMethod==='GET' && $requestUri==='/copy/events') {
         $auth=AuthMiddleware::authenticate(); CopyTradingController::events((int)$auth['user_id']);
     }
