@@ -1,16 +1,16 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/../utils/JwtHandler.php';
+require_once __DIR__ . '/../utils/jwthandler.php';
 
 class AuthController {
     public static function register($data) {
-        $email = filter_var($data['email'] ?? '', FILTER_VALIDATE_EMAIL);
+        $email = filter_var(strtolower(trim((string)($data['email'] ?? ''))), FILTER_VALIDATE_EMAIL);
         $password = $data['password'] ?? '';
         $name = trim($data['name'] ?? '');
 
-        if (!$email || strlen($password) < 6 || strlen($name) < 2) {
+        if (!$email || strlen($password) < 8 || strlen($name) < 2) {
             http_response_code(400);
-            echo json_encode(['error' => 'Champs invalides (email, mot de passe 6+ caractères, nom 2+ caractères)']);
+            echo json_encode(['error' => 'Champs invalides (email, mot de passe 8+ caractères, nom 2+ caractères)']);
             return;
         }
 
@@ -20,9 +20,9 @@ class AuthController {
             return;
         }
 
-        $userId = User::create($email, $password, $name);
+        try { $userId = User::create($email, $password, $name); } catch (PDOException $e) { if ($e->getCode() === '23000') { http_response_code(409); echo json_encode(['error'=>'Email déjà utilisé']); return; } throw $e; }
         $token = JwtHandler::encode(['user_id' => $userId, 'email' => $email, 'role' => 'student']);
-        echo json_encode(['token' => $token, 'user' => ['id' => $userId, 'email' => $email, 'name' => $name]]);
+        echo json_encode(['token' => $token, 'user' => ['id' => $userId, 'email' => $email, 'name' => $name, 'role' => 'student']]);
     }
 
     public static function login($data) {
