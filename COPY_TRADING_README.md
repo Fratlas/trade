@@ -29,3 +29,28 @@ Toutes les routes nécessitent une authentification JWT. Les requêtes à ID d'a
 - Faire valider les obligations réglementaires, KYC/AML, consentement, politique de risque, commissions et publicité selon les juridictions concernées.
 - Vérifier et supprimer l'ancien fichier `confing/database.php` qui contient encore une ancienne configuration ; ne pas exposer ce dossier sur le web.
 - Exécuter tests manuels et automatisés sur un serveur de staging avant tout déploiement. Les changements de cette branche n'ont pas été testés avec un broker réel.
+
+## Phase 2 — publication de signaux simulés
+
+Appliquer aussi `sql/copy_trading_v2.sql` **après** `sql/copy_trading.sql`, avec sauvegarde de la base.
+
+Un compte utilisateur doit être explicitement enregistré par l'administrateur dans `copy_traders` pour publier un signal. Exemple de demande authentifiée :
+
+```http
+POST /api/copy/events
+Authorization: Bearer <JWT>
+Content-Type: application/json
+
+{
+  "client_event_id": "demo_signal_000001",
+  "symbol": "EURUSD",
+  "direction": "buy",
+  "entry_price": 1.1050,
+  "stop_loss": 1.1000,
+  "take_profit": 1.1150
+}
+```
+
+Le même identifiant `client_event_id` pour le même maître ne crée pas de nouveau signal. La vérification des prix exige `SL < entrée < TP` pour un achat et `TP < entrée < SL` pour une vente. Les abonnés ne peuvent consulter que les événements créés à partir de leur consentement/abonnement. Aucun ordre réel n'est généré et aucun calcul de performance réelle n'est possible à ce stade.
+
+**Points de vigilance** : il reste à sécuriser la rotation des secrets, la limitation de débit, les tests automatisés, le déploiement et la supervision. La branche est une proposition de code à vérifier sur un serveur de préproduction, pas une version validée pour les opérations financières. Les données d'une éventuelle ancienne instance utilisant l'ancien secret JWT devront se reconnecter après configuration de la nouvelle clé.
