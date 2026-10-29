@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../utils/JwtHandler.php';
+require_once __DIR__ . '/../utils/jwthandler.php';
 
 class AuthMiddleware {
     public static function authenticate() {
-        $headers = getallheaders();
-        $authHeader = isset($headers['Authorization']) ? $headers['Authorization'] : '';
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+        if (!$authHeader && function_exists('getallheaders')) { foreach (getallheaders() as $key=>$value) { if (strtolower($key)==='authorization') $authHeader=$value; } }
         if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
             $token = $matches[1];
             $payload = JwtHandler::decode($token);
