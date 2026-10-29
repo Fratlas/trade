@@ -8,4 +8,5 @@ require_once __DIR__ . '/../src/controller/CourseController.php';
 require_once __DIR__ . '/../src/controller/ProgressController.php';
 require_once __DIR__ . '/../src/controller/CopyTradingController.php';
 require_once __DIR__ . '/../src/controller/SimulationController.php';
+require_once __DIR__ . '/../src/controller/AdminController.php';
 require_once __DIR__ . '/../src/routes.php';
