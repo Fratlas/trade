@@ -63,7 +63,7 @@ class CopyTradingController {
         $db=getDB();
         $q=$db->prepare("SELECT e.id,e.trader_id,e.symbol,e.direction,e.entry_price,e.stop_loss,e.take_profit,e.created_at
           FROM copy_simulated_events e JOIN copy_subscriptions s ON s.trader_id=e.trader_id
-          WHERE s.follower_user_id=? ORDER BY e.id DESC LIMIT 100");
+          WHERE s.follower_user_id=? AND e.created_at >= s.consent_at ORDER BY e.id DESC LIMIT 100");
         $q->execute([$userId]);
         self::respond(['mode'=>'simulation','events'=>$q->fetchAll()]);
     }
