@@ -1,4 +1,9 @@
+Options -Indexes
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ public/index.php [QSA,L]
+
+# Do not publish database configuration, source, migrations or repository metadata.
+RewriteRule ^(config|confing|src|sql|\.git)(/|$) - [F,L,NC]
+RewriteRule ^(COPY_TRADING_README\.md|README\.md|\.env.*)$ - [F,L,NC]
+
+# API only routes to PHP bootstrap. Existing static pages and assets remain accessible.
+RewriteRule ^api(?:/.*)?$ public/index.php [QSA,L]
