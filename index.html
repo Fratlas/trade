@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Katsuki Trading — Formation trading d'élite : modules vidéo, audio, PDF, coach IA, examens et accompagnement personnalisé.">
+    <meta name="theme-color" content="#0a0a0b">
+    <title>Katsuki Trading | L'Art de la Domination des Marchés</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Votre style existant (copiez-le depuis votre code initial) */
+        :root {
+            --primary: #ef4444;
+            --primary-dark: #991b1b;
+            --bg-dark: #0a0a0b;
+            --bg-card: rgba(23, 23, 23, 0.9);
+            --text-primary: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(239, 68, 68, 0.3);
+        }
+        * { scrollbar-width: thin; scrollbar-color: var(--primary-dark) var(--bg-dark); }
+        *::-webkit-scrollbar { width: 6px; }
+        *::-webkit-scrollbar-track { background: var(--bg-dark); }
+        *::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 3px; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-primary); overflow-x: hidden; cursor: default; }
+        .hero-mesh {
+            background-image:
+                linear-gradient(rgba(239,68,68,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(239,68,68,0.03) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 75%);
+        }
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            animation: orbFloat 12s ease-in-out infinite;
+        }
+        .hero-orb-1 { width: 420px; height: 420px; background: rgba(239,68,68,0.18); top: -10%; left: -5%; }
+        .hero-orb-2 { width: 320px; height: 320px; background: rgba(249,115,22,0.12); bottom: 10%; right: -5%; animation-delay: -4s; }
+        @keyframes orbFloat { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(20px, -30px) scale(1.05); } }
+        .hero-panel {
+            background: linear-gradient(145deg, rgba(23,23,23,0.95) 0%, rgba(15,15,15,0.98) 100%);
+            border: 1px solid rgba(239,68,68,0.2);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(239,68,68,0.08);
+        }
+        .hero-stat-line { height: 3px; border-radius: 999px; background: linear-gradient(90deg, #ef4444, #f97316); }
+        .marquee-track { display: flex; gap: 2.5rem; animation: marquee 28s linear infinite; width: max-content; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .marquee-wrap { overflow: hidden; mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); }
+        .step-num {
+            width: 3rem; height: 3rem; border-radius: 1rem;
+            background: linear-gradient(135deg, #ef4444, #991b1b);
+            display: grid; place-items: center; font-weight: 900; font-size: 1.1rem;
+            box-shadow: 0 8px 24px rgba(239,68,68,0.35);
+        }
+        .platform-icon {
+            width: 3.5rem; height: 3.5rem; border-radius: 1rem;
+            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+            display: grid; place-items: center; color: #ef4444; font-size: 1.25rem;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .platform-card:hover .platform-icon { transform: scale(1.08); background: rgba(239,68,68,0.18); }
+        .course-mini { transition: transform 0.3s ease, border-color 0.3s ease; }
+        .course-mini:hover { transform: translateY(-6px); border-color: rgba(239,68,68,0.4); }
+        .back-top {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 40;
+            width: 3rem; height: 3rem; border-radius: 1rem;
+            background: rgba(239,68,68,0.9); color: white; border: none;
+            display: grid; place-items: center; box-shadow: 0 8px 30px rgba(239,68,68,0.4);
+            opacity: 0; pointer-events: none; transform: translateY(12px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .back-top.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .trust-pill { padding: 0.5rem 1rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); font-size: 0.8rem; color: #a1a1aa; white-space: nowrap; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal.revealed { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .stat-counter { font-variant-numeric: tabular-nums; }
+        .compare-bad { color: #f87171; }
+        .compare-good { color: #34d399; }
+        .compare-row { display: flex; align-items: flex-start; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .compare-row:last-child { border-bottom: none; }
+        .ticker-bar { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; }
+        .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0 1.25rem; border-right: 1px solid rgba(255,255,255,0.06); }
+        .ticker-up { color: #34d399; }
+        .ticker-down { color: #f87171; }
+        .sticky-cta {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;
+            background: rgba(10,10,11,0.92); backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(239,68,68,0.25);
+            padding: 0.85rem 1rem;
+            transform: translateY(100%); transition: transform 0.4s ease;
+        }
+        .sticky-cta.visible { transform: translateY(0); }
+        .guarantee-badge {
+            background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04));
+            border: 1px solid rgba(34,197,94,0.25);
+        }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .katsuki-gradient { background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #991b1b 100%); }
+        .katsuki-text { background: linear-gradient(135deg, #ef4444 0%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .katsuki-gradient-animated { background: linear-gradient(135deg, #ef4444 0%, #dc2626 25%, #f97316 50%, #dc2626 75%, #991b1b 100%); background-size: 200% 200%; animation: gradientShift 3s ease infinite; }
+        @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        .card-glass { background: var(--bg-card); backdrop-filter: blur(20px); border: 1px solid var(--border-subtle); }
+        .card-glass-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-glass-hover:hover { border-color: var(--border-glow); box-shadow: 0 20px 40px rgba(239, 68, 68, 0.1), 0 0 80px rgba(239, 68, 68, 0.05); transform: translateY(-4px); }
+        .nav-link { position: relative; padding: 0.5rem 0; }
+        .nav-link::after { content: ''; position: absolute; bottom: -2px; left: 50%; width: 0; height: 2px; background: var(--primary); transition: all 0.3s ease; transform: translateX(-50%); }
+        .nav-link:hover::after { width: 100%; }
+        .glow-button { position: relative; overflow: hidden; }
+        .glow-button::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(239,68,68,0.4) 0%, transparent 70%); opacity: 0; transition: opacity 0.3s; }
+        .glow-button:hover::before { opacity: 1; }
+        .pulse-ring { animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulseRing { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.05); opacity: 0.3; } 100% { transform: scale(1); opacity: 0.5; } }
+        .floating { animation: floating 3s ease-in-out infinite; }
+        @keyframes floating { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .floating-delayed { animation: floating 3s ease-in-out 1.5s infinite; }
+        [v-cloak] { display: none; }
+        .fade-in-up { opacity: 0; transform: translateY(30px); animation: fadeInUp 0.8s ease forwards; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        .stagger-6 { animation-delay: 0.6s; }
+        .stagger-7 { animation-delay: 0.7s; }
+        .stagger-8 { animation-delay: 0.8s; }
+        .philosophy-grid { background: radial-gradient(circle at center, rgba(239,68,68,0.15) 0%, transparent 70%); }
+        .timeline-line::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, #ef4444, #ef4444, transparent); transform: translateX(-50%); }
+        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.5s ease; }
+        .accordion-content.active { max-height: 1000px; padding-top: 1rem; padding-bottom: 1rem; }
+        .course-card, .service-card { display: flex; flex-direction: column; height: 100%; }
+        .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; }
+        .timeline-side .timeline-card { width: 100%; max-width: 28rem; }
+        @media (max-width: 767px) {
+            .back-top { bottom: 5.5rem; }
+            .card-glass {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+            .mobile-card-pad { padding: 1.5rem !important; }
+            .mobile-title { font-size: clamp(2rem, 8vw, 3rem) !important; line-height: 1.1 !important; }
+            .mobile-subtitle { font-size: 1rem !important; }
+            .timeline-line::before { left: 50%; }
+            .timeline-item {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+                gap: 1rem !important;
+            }
+            .timeline-side {
+                width: 100% !important;
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+                text-align: center !important;
+            }
+            .timeline-side .timeline-card {
+                margin-left: auto !important;
+                margin-right: auto !important;
+                text-align: left;
+                max-width: 100%;
+            }
+            .timeline-spacer { display: none !important; }
+            .timeline-dot {
+                position: relative !important;
+                left: auto !important;
+                transform: none !important;
+                margin: 0.5rem 0 !important;
+            }
+            .timeline-line .space-y-32 > :not([hidden]) ~ :not([hidden]) { margin-top: 2.5rem !important; }
+            .pillars-grid { grid-template-columns: 1fr !important; max-width: 24rem; margin-left: auto; margin-right: auto; }
+            .service-features { grid-template-columns: 1fr !important; }
+            .footer-links { flex-direction: column; align-items: center; text-align: center; gap: 0.75rem; }
+        }
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .pillars-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        }
+        @media (min-width: 1024px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (min-width: 1280px) { .testimonials-grid { grid-template-columns: repeat(3, 1fr); } }
+    </style>
+</head>
+<body>
+    <div id="app" v-cloak>
+        <!-- Navigation (identique) avec ajout du nom utilisateur si connecté -->
+        <nav class="fixed w-full z-50 transition-all duration-500" 
+             :class="{'card-glass border-b border-white/5': !scrolled, 'bg-black/95 border-b border-white/10 shadow-2xl': scrolled}">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-20 items-center">
+                    <button type="button" @click="setView('home')" class="flex items-center gap-3 text-left">
+                        <div class="w-14 h-14 katsuki-gradient-animated rounded-2xl flex items-center justify-center font-black text-2xl shadow-xl shadow-red-600/30 transform hover:rotate-12 transition-transform duration-300">K</div>
+                        <div class="flex flex-col leading-tight"><span class="text-lg font-black tracking-tighter uppercase italic">Katsuki</span><span class="text-red-500 text-sm font-bold tracking-widest uppercase">Trading</span></div>
+                    </button>
+                    <div class="hidden md:flex items-center space-x-1">
+                        <a v-for="item in navItems" :key="item.id" @click="setView(item.id)" class="nav-link px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer relative overflow-hidden group" :class="{'text-red-500': currentView === item.id, 'text-gray-400 hover:text-white': currentView !== item.id}">
+                            <span class="relative z-10 flex items-center gap-2"><i :class="item.icon" class="text-xs"></i>{{item.label}}</span>
+                            <div v-if="currentView === item.id" class="absolute inset-0 bg-red-500/10 rounded-xl"></div>
+                        </a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <a href="/auth/login.php" class="hidden md:inline-flex items-center gap-2 border border-red-500/30 text-red-300 hover:text-white hover:bg-red-500/10 px-5 py-2.5 rounded-xl text-sm font-bold transition"><i class="fas fa-right-to-bracket"></i>Espace formation</a>
+                        <template v-if="!isLoggedIn">
+                            <button @click="showAuthModal = true" class="hidden md:inline-flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white px-8 py-3.5 rounded-2xl font-bold transition-all glow-button text-sm shadow-lg shadow-red-600/20 hover:shadow-red-600/40"><i class="fas fa-fire"></i><span>Rejoindre l'Élite</span></button>
+                        </template>
+                        <template v-else>
+                            <span class="text-sm text-gray-300 hidden md:inline">Bonjour, {{ user.name }}</span>
+                            <button @click="goToDashboard" class="hidden md:inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-xl text-sm font-bold transition"><i class="fas fa-gauge"></i>Mon espace</button>
+                            <button @click="logout" class="hidden md:inline-flex items-center gap-2 bg-red-600/20 hover:bg-red-600/40 text-red-400 px-5 py-2 rounded-xl text-sm transition"><i class="fas fa-sign-out-alt"></i>Déconnexion</button>
+                        </template>
+                        <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-3 hover:bg-white/5 rounded-xl transition"><i :class="mobileMenuOpen ? 'fas fa-times' : 'fas fa-bars'" class="text-xl"></i></button>
+                    </div>
+                </div>
+                <div v-if="mobileMenuOpen" class="md:hidden py-6 border-t border-white/5 animate-fadeIn">
+                    <a v-for="item in navItems" :key="item.id" @click="setView(item.id)" class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all cursor-pointer mb-2" :class="{'bg-red-600/10 text-red-500': currentView === item.id, 'text-gray-400 hover:bg-white/5': currentView !== item.id}">
+                        <i :class="item.icon" class="w-5 text-center"></i><span>{{item.label}}</span><span v-if="currentView === item.id" class="ml-auto w-2 h-2 bg-red-500 rounded-full pulse-ring"></span>
+                    </a>
+                    <a href="/auth/login.php" class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium text-gray-300 hover:bg-white/5 transition"><i class="fas fa-right-to-bracket w-5 text-center"></i>Espace formation</a>
+                    <template v-if="!isLoggedIn"><button @click="showAuthModal = true; mobileMenuOpen = false" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-bold transition-all"><i class="fas fa-fire mr-2"></i>Rejoindre l'Élite</button></template>
+                    <template v-else>
+                        <button @click="goToDashboard" class="w-full mt-2 bg-red-600 hover:bg-red-700 text-white px-6 py-4 rounded-2xl font-bold transition-all"><i class="fas fa-gauge mr-2"></i>Mon espace</button>
+                        <button @click="logout" class="w-full mt-2 bg-red-600/20 text-red-400 px-6 py-4 rounded-2xl font-bold"><i class="fas fa-sign-out-alt mr-2"></i>Déconnexion</button>
+                    </template>
+                </div>
+            </div>
+        </nav>
+
+        <!-- TICKER MARCHÉ (décoratif) -->
+        <div v-if="currentView === 'home'" class="fixed top-20 left-0 right-0 z-40 hidden lg:block pointer-events-none opacity-60">
+            <div class="ticker-bar overflow-hidden whitespace-nowrap py-1.5 bg-black/50 border-b border-white/5">
+                <div class="marquee-track" style="animation-duration: 40s">
+                    <span v-for="n in 2" :key="'tick'+n" class="inline-flex">
+                        <span v-for="t in marketTicker" :key="t.pair+n" class="ticker-item">
+                            <span class="text-gray-500">{{ t.pair }}</span>
+                            <span :class="t.up ? 'ticker-up' : 'ticker-down'">{{ t.price }}</span>
+                            <span :class="t.up ? 'ticker-up' : 'ticker-down'">{{ t.change }}</span>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <main class="relative">
+            <!-- HERO -->
+            <section v-if="currentView === 'home'" class="pt-28 pb-16 md:pt-36 md:pb-24 px-4 relative overflow-hidden">
+                <div class="absolute inset-0 hero-mesh pointer-events-none"></div>
+                <div class="hero-orb hero-orb-1"></div>
+                <div class="hero-orb hero-orb-2"></div>
+                <div class="max-w-7xl mx-auto relative">
+                    <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                        <div class="text-center lg:text-left">
+                            <div class="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest fade-in-up">
+                                <span class="w-2 h-2 rounded-full bg-red-500 pulse-ring"></span>
+                                Formation Trading d'Élite
+                            </div>
+                            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.05] fade-in-up mobile-title">
+                                Dominez les Marchés avec <span class="katsuki-text">Katsuki Trading</span>
+                            </h1>
+                            <p class="text-gray-400 text-lg md:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8 fade-in-up mobile-subtitle">
+                                Vidéo, audio, PDF, lecture vocale et coach IA — une plateforme complète pour passer du débutant au trader discipliné.
+                            </p>
+                            <div class="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 fade-in-up mb-8">
+                                <button @click="isLoggedIn ? goToDashboard() : (showAuthModal = true)" class="bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-2xl font-bold transition-all glow-button shadow-lg shadow-red-600/20">
+                                    <i class="fas fa-fire mr-2"></i>{{ isLoggedIn ? 'Accéder à ma formation' : 'Commencer gratuitement' }}
+                                </button>
+                                <button @click="setView('formation')" class="border border-white/20 hover:border-red-500/50 px-8 py-4 rounded-2xl font-bold transition-all hover:bg-white/5">
+                                    <i class="fas fa-play mr-2 text-red-400"></i>Voir les programmes
+                                </button>
+                            </div>
+                            <div class="flex flex-wrap justify-center lg:justify-start gap-3 fade-in-up">
+                                <span class="trust-pill"><i class="fas fa-shield-halved text-red-500 mr-2"></i>Paiement sécurisé</span>
+                                <span class="trust-pill"><i class="fas fa-certificate text-red-500 mr-2"></i>Certification</span>
+                                <span class="trust-pill"><i class="fas fa-headset text-red-500 mr-2"></i>Support admin</span>
+                            </div>
+                        </div>
+                        <div class="fade-in-up stagger-2">
+                            <div class="hero-panel rounded-3xl p-6 md:p-8 max-w-lg mx-auto lg:ml-auto lg:mr-0">
+                                <div class="flex items-center justify-between mb-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 katsuki-gradient rounded-xl flex items-center justify-center font-black">K</div>
+                                        <div><div class="font-bold text-sm">Espace Formation</div><div class="text-xs text-gray-500">Tableau de bord live</div></div>
+                                    </div>
+                                    <span class="text-xs font-mono text-green-400 bg-green-500/10 px-2 py-1 rounded-lg">● En ligne</span>
+                                </div>
+                                <div class="space-y-4 mb-6">
+                                    <div v-for="(item, i) in heroPreview" :key="item.label" class="rounded-2xl bg-white/5 border border-white/5 p-4">
+                                        <div class="flex justify-between text-xs text-gray-400 mb-2"><span>{{ item.label }}</span><span class="text-red-400">{{ item.value }}</span></div>
+                                        <div class="hero-stat-line" :style="{ width: item.pct + '%' }"></div>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3 text-center">
+                                    <div class="rounded-xl bg-red-500/10 p-3"><i class="fas fa-video text-red-400 mb-1"></i><div class="text-xs text-gray-400">Vidéo</div></div>
+                                    <div class="rounded-xl bg-red-500/10 p-3"><i class="fas fa-robot text-red-400 mb-1"></i><div class="text-xs text-gray-400">Coach IA</div></div>
+                                    <div class="rounded-xl bg-red-500/10 p-3"><i class="fas fa-volume-up text-red-400 mb-1"></i><div class="text-xs text-gray-400">Audio</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-16 max-w-4xl mx-auto lg:max-w-none">
+                        <div class="card-glass rounded-2xl p-5 mobile-card-pad fade-in-up stagger-1 text-center lg:text-left"><div class="text-2xl md:text-3xl font-black katsuki-text">{{ courses.length || '3' }}+</div><div class="text-xs md:text-sm text-gray-400 mt-1">Parcours complets</div></div>
+                        <div class="card-glass rounded-2xl p-5 mobile-card-pad fade-in-up stagger-2 text-center lg:text-left"><div class="text-2xl md:text-3xl font-black katsuki-text">IA</div><div class="text-xs md:text-sm text-gray-400 mt-1">Coach personnel</div></div>
+                        <div class="card-glass rounded-2xl p-5 mobile-card-pad fade-in-up stagger-3 text-center lg:text-left"><div class="text-2xl md:text-3xl font-black katsuki-text">24/7</div><div class="text-xs md:text-sm text-gray-400 mt-1">Accès plateforme</div></div>
+                        <div class="card-glass rounded-2xl p-5 mobile-card-pad fade-in-up stagger-4 text-center lg:text-left"><div class="text-2xl md:text-3xl font-black katsuki-text">100%</div><div class="text-xs md:text-sm text-gray-400 mt-1">En ligne</div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MARQUEE -->
+            <section v-if="currentView === 'home'" class="py-6 border-y border-white/5 bg-black/40">
+                <div class="marquee-wrap">
+                    <div class="marquee-track">
+                        <span v-for="n in 2" :key="n" class="flex gap-10 items-center">
+                            <span v-for="tag in marqueeTags" :key="tag + n" class="trust-pill font-mono text-xs uppercase tracking-wider"><i class="fas fa-bolt text-red-500 mr-2"></i>{{ tag }}</span>
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CHIFFRES CLÉS -->
+            <section v-if="currentView === 'home'" class="py-16 md:py-20 px-4 border-b border-white/5">
+                <div class="max-w-7xl mx-auto">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 reveal" data-reveal data-stats-counter>
+                        <div v-for="(stat, i) in liveStats" :key="stat.label" class="text-center card-glass rounded-2xl p-6" :class="'reveal-delay-' + (i + 1)">
+                            <div class="text-3xl md:text-4xl font-black katsuki-text stat-counter">{{ stat.display }}{{ stat.suffix }}</div>
+                            <div class="text-sm text-gray-400 mt-2">{{ stat.label }}</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PLATEFORME -->
+            <section v-if="currentView === 'home'" class="py-20 md:py-28 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-14 fade-in-up">
+                        <div class="inline-block mb-4 px-5 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-xs font-bold uppercase tracking-widest">Plateforme tout-en-un</div>
+                        <h2 class="text-3xl md:text-5xl font-black mb-4">Tout ce qu'il faut pour <span class="katsuki-text">progresser</span></h2>
+                        <p class="text-gray-400 max-w-2xl mx-auto">Une expérience de formation moderne : multimédia, examens, messagerie admin et intelligence artificielle intégrée.</p>
+                    </div>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        <div v-for="(feat, i) in platformFeatures" :key="feat.title" class="platform-card card-glass card-glass-hover rounded-2xl p-6 fade-in-up" :class="'stagger-' + ((i % 4) + 1)">
+                            <div class="platform-icon mb-4"><i :class="feat.icon"></i></div>
+                            <h3 class="font-bold mb-2">{{ feat.title }}</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">{{ feat.desc }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMMENT ÇA MARCHE -->
+            <section v-if="currentView === 'home'" class="py-20 md:py-28 px-4 bg-black/30">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-14">
+                        <h2 class="text-3xl md:text-5xl font-black mb-4">Comment <span class="katsuki-text">commencer</span> ?</h2>
+                        <p class="text-gray-400">Trois étapes simples pour accéder à votre formation.</p>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div v-for="(step, i) in howItWorks" :key="step.title" class="card-glass rounded-2xl p-8 text-center md:text-left fade-in-up" :class="'stagger-' + (i + 1)">
+                            <div class="step-num mx-auto md:mx-0 mb-5">{{ i + 1 }}</div>
+                            <h3 class="text-xl font-bold mb-3">{{ step.title }}</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">{{ step.desc }}</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMPARATIF -->
+            <section v-if="currentView === 'home'" class="py-20 md:py-28 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-14 reveal" data-reveal>
+                        <div class="inline-block mb-4 px-5 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-xs font-bold uppercase tracking-widest">La différence Katsuki</div>
+                        <h2 class="text-3xl md:text-5xl font-black mb-4">Trader seul vs <span class="katsuki-text">Trader Katsuki</span></h2>
+                        <p class="text-gray-400 max-w-2xl mx-auto">La plupart échouent par manque de structure. Notre méthode corrige exactement ça.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-6 reveal" data-reveal>
+                        <div class="card-glass rounded-2xl p-8 border-red-500/20">
+                            <h3 class="text-xl font-bold mb-6 flex items-center gap-3"><i class="fas fa-times-circle text-red-500"></i> Sans formation structurée</h3>
+                            <div v-for="item in compareBad" :key="item" class="compare-row">
+                                <i class="fas fa-xmark compare-bad mt-1 flex-shrink-0"></i>
+                                <span class="text-gray-400 text-sm">{{ item }}</span>
+                            </div>
+                        </div>
+                        <div class="card-glass rounded-2xl p-8 border-green-500/20 guarantee-badge">
+                            <h3 class="text-xl font-bold mb-6 flex items-center gap-3"><i class="fas fa-check-circle text-green-400"></i> Avec Katsuki Trading</h3>
+                            <div v-for="item in compareGood" :key="item" class="compare-row">
+                                <i class="fas fa-check compare-good mt-1 flex-shrink-0"></i>
+                                <span class="text-gray-300 text-sm">{{ item }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FORMATIONS EN VEDETTE (accueil) -->
+            <section v-if="currentView === 'home'" class="py-20 md:py-28 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+                        <div>
+                            <div class="inline-block mb-4 px-5 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-xs font-bold uppercase tracking-widest">Nos programmes</div>
+                            <h2 class="text-3xl md:text-5xl font-black">Formations <span class="katsuki-text">en vedette</span></h2>
+                        </div>
+                        <button @click="setView('formation')" class="self-start md:self-auto border border-red-500/30 text-red-300 hover:bg-red-500/10 px-6 py-3 rounded-xl font-bold text-sm transition">Voir tout <i class="fas fa-arrow-right ml-2"></i></button>
+                    </div>
+                    <div v-if="coursesLoading" class="text-center text-gray-400 py-12">Chargement...</div>
+                    <div v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <article v-for="course in courses.slice(0, 3)" :key="'home-' + course.id" class="course-mini card-glass rounded-2xl p-6 flex flex-col h-full">
+                            <div class="flex items-start justify-between gap-3 mb-4">
+                                <div class="w-12 h-12 katsuki-gradient rounded-xl flex items-center justify-center text-lg"><i :class="course.icon || 'fas fa-chart-line'"></i></div>
+                                <span class="text-xs font-bold uppercase px-2 py-1 rounded-lg" :class="Number(course.price) <= 0 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'">{{ Number(course.price) <= 0 ? 'Gratuit' : formatPrice(course.price) + '€' }}</span>
+                            </div>
+                            <h3 class="text-xl font-bold mb-2">{{ course.title }}</h3>
+                            <p class="text-gray-400 text-sm mb-4 line-clamp-3 flex-grow">{{ course.full_desc }}</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-500 mb-5">
+                                <span><i class="fas fa-layer-group text-red-500/70 mr-1"></i>{{ course.modules_count }} modules</span>
+                                <span><i class="fas fa-signal text-red-500/70 mr-1"></i>{{ course.level }}</span>
+                            </div>
+                            <button @click="enrollCourse(course.id)" class="w-full bg-red-600/90 hover:bg-red-600 text-white py-3 rounded-xl font-bold text-sm transition">{{ isLoggedIn ? 'Accéder' : "S'inscrire" }}</button>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+             <!-- SECTION MANIFESTE / PHILOSOPHIE -->
+            <section v-if="currentView === 'philosophy' || currentView === 'home'" class="py-32 px-4 relative overflow-hidden">
+                <div class="absolute inset-0 philosophy-grid"></div>
+                <div class="max-w-7xl mx-auto relative">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
+                            Notre Manifeste
+                        </div>
+                        <h2 class="text-4xl md:text-7xl font-black mb-8 mobile-title">Le Code du <span class="katsuki-text">Guerrier des Marchés</span></h2>
+                        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mobile-subtitle">
+                            Avant d'être une méthode, Katsuki est un état d'esprit. Une philosophie forgée dans l'adversité, 
+                            testée dans le chaos des marchés, et affinée par des années de pratique intense.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-5 gap-6 mb-20 pillars-grid">
+                        <div v-for="(pillar, index) in pillars" :key="pillar.title"
+                             class="card-glass card-glass-hover rounded-3xl p-8 text-center fade-in-up cursor-pointer group"
+                             :class="'stagger-' + (index + 1)">
+                            <div class="w-20 h-20 katsuki-gradient rounded-2xl flex items-center justify-center mx-auto mb-6 text-3xl shadow-lg shadow-red-600/20 group-hover:scale-110 transition-transform duration-300">
+                                <i :class="pillar.icon"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4">{{pillar.title}}</h3>
+                            <p class="text-gray-400 text-sm leading-relaxed">{{pillar.shortDesc}}</p>
+                            <div class="mt-4 text-red-500 text-xs font-bold uppercase opacity-0 group-hover:opacity-100 transition-opacity">
+                                En savoir plus →
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative timeline-line py-20">
+                        <div class="space-y-32">
+                            <div class="relative flex items-center timeline-item fade-in-up">
+                                <div class="w-1/2 pr-16 text-right timeline-side">
+                                    <div class="inline-block timeline-card bg-red-500/10 border border-red-500/30 rounded-2xl px-6 py-4 mobile-card-pad">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase 1</span>
+                                        <h4 class="text-xl md:text-2xl font-bold mt-2 mb-3">L'Éveil du Débutant</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md md:ml-auto">
+                                            Vous découvrez que le trading n'est pas un casino. Vous comprenez que chaque trade doit avoir une raison d'être, 
+                                            un plan d'entrée, un plan de sortie. C'est la fin de l'improvisation et le début de la conscience.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="timeline-dot absolute left-1/2 -translate-x-1/2 w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50 z-10"></div>
+                                <div class="w-1/2 pl-16 timeline-spacer"></div>
+                            </div>
+
+                            <div class="relative flex items-center timeline-item fade-in-up stagger-2">
+                                <div class="w-1/2 pr-16 timeline-spacer"></div>
+                                <div class="timeline-dot absolute left-1/2 -translate-x-1/2 w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50 z-10"></div>
+                                <div class="w-1/2 pl-16 timeline-side">
+                                    <div class="inline-block timeline-card bg-red-500/10 border border-red-500/30 rounded-2xl px-6 py-4 mobile-card-pad">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase 2</span>
+                                        <h4 class="text-xl md:text-2xl font-bold mt-2 mb-3">La Discipline du Guerrier</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md">
+                                            Vous implémentez une routine. Vous tradez comme un athlète de haut niveau s'entraîne : 
+                                            avec constance, avec méthode, sans émotion. Chaque matin, même rituel. Chaque trade, même protocole.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-center timeline-item fade-in-up stagger-4">
+                                <div class="w-1/2 pr-16 text-right timeline-side">
+                                    <div class="inline-block timeline-card bg-red-500/10 border border-red-500/30 rounded-2xl px-6 py-4 mobile-card-pad">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase 3</span>
+                                        <h4 class="text-xl md:text-2xl font-bold mt-2 mb-3">La Maîtrise de Soi</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md md:ml-auto">
+                                            Le marché n'est plus un adversaire. C'est un miroir. Vous ne combattez plus les mouvements de prix, 
+                                            vous combattez vos propres démons intérieurs : la peur, l'avidité, l'impatience, l'ego. C'est là que tout bascule.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="timeline-dot absolute left-1/2 -translate-x-1/2 w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50 z-10"></div>
+                                <div class="w-1/2 pl-16 timeline-spacer"></div>
+                            </div>
+
+                            <div class="relative flex items-center timeline-item fade-in-up stagger-6">
+                                <div class="w-1/2 pr-16 timeline-spacer"></div>
+                                <div class="timeline-dot absolute left-1/2 -translate-x-1/2 w-8 h-8 katsuki-gradient-animated rounded-full shadow-2xl shadow-red-500/50 z-10 flex items-center justify-center">
+                                    <i class="fas fa-crown text-xs"></i>
+                                </div>
+                                <div class="w-1/2 pl-16 timeline-side">
+                                    <div class="inline-block timeline-card bg-red-500/20 border border-red-500/50 rounded-2xl px-6 py-4 mobile-card-pad">
+                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase Finale</span>
+                                        <h4 class="text-xl md:text-2xl font-bold mt-2 mb-3">L'Excellence Inconsciente</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md">
+                                            Vous ne réfléchissez plus. Vous exécutez. Comme un artiste martial qui ne pense plus aux mouvements, 
+                                            vous laissez vos années d'entraînement s'exprimer à travers vous. Le trading devient une extension de votre être.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION FORMATION AVEC CARTES PLEINES -->
+            <section v-if="currentView === 'formation'" class="pt-32 pb-32 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
+                            Nos Programmes
+                        </div>
+                        <h2 class="text-4xl md:text-7xl font-black mb-8 mobile-title">L'Arsenal du <span class="katsuki-text">Trader Moderne</span></h2>
+                        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mobile-subtitle">
+                            Des formations structurées comme un parcours de combattant. Chaque niveau débloque de nouvelles compétences, 
+                            de nouvelles perspectives, et vous rapproche de la maîtrise ultime des marchés financiers.
+                        </p>
+                    </div>
+
+                    <div class="card-glass rounded-3xl p-6 md:p-12 mb-16 fade-in-up stagger-1 mobile-card-pad">
+                        <h3 class="text-3xl font-bold mb-8 text-center">Pourquoi Nos Formations Sont <span class="katsuki-text">Différentes</span></h3>
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-brain text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Approche Neuropsychologique</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Nous intégrons les neurosciences pour comprendre comment votre cerveau réagit face au risque et à la récompense. Vous apprendrez à reconnaître et neutraliser vos biais cognitifs.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-dumbbell text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Entraînement Progressif</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Comme un athlète, vous progressez par paliers. Chaque module valide des compétences avant de passer au suivant. Pas de saut, pas de raccourci.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-users text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Communauté d'Élite</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Vous n'êtes pas seul. Intégrez un cercle fermé de traders partageant les mêmes standards d'excellence. Échangez, progressez, challengez-vous mutuellement.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-chart-line text-red-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold mb-2">Suivi Personnalisé</h4>
+                                        <p class="text-gray-400 text-sm leading-relaxed">Un mentor dédié analyse vos performances, identifie vos points faibles, et ajuste votre parcours. Vous n'êtes pas un numéro, vous êtes un projet d'excellence.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-if="coursesLoading" class="text-center text-gray-400 py-12">Chargement des formations...</div>
+                    <div v-else-if="!courses.length" class="text-center text-gray-400 py-12 card-glass rounded-3xl p-8">Aucune formation disponible pour le moment.</div>
+                    <div v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div v-for="(course, index) in courses" :key="course.id"
+                             class="course-card card-glass card-glass-hover rounded-3xl overflow-hidden fade-in-up mx-auto w-full max-w-md md:max-w-none"
+                             :class="'stagger-' + (index + 2)">
+                            <div class="p-6 md:p-10 flex flex-col h-full mobile-card-pad">
+                                <div>
+                                    <div class="w-16 h-16 md:w-20 md:h-20 katsuki-gradient rounded-2xl flex items-center justify-center mb-6 md:mb-8 text-2xl md:text-3xl shadow-xl shadow-red-600/30 mx-auto md:mx-0">
+                                        <i :class="course.icon || 'fas fa-chart-line'"></i>
+                                    </div>
+                                    <div class="mb-6 text-center md:text-left">
+                                        <div class="inline-block px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider mb-4"
+                                             :class="course.level === 'Débutant' ? 'bg-green-500/20 text-green-400' : course.level === 'Avancé' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'">
+                                            {{course.level}}
+                                        </div>
+                                        <h3 class="text-2xl md:text-3xl font-bold mb-4">{{course.title}}</h3>
+                                        <p class="text-gray-400 leading-relaxed text-sm mb-6">{{course.full_desc}}</p>
+                                    </div>
+                                    <div v-if="course.features && course.features.length" class="space-y-4 mb-8">
+                                        <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300">Ce que vous allez maîtriser :</h4>
+                                        <div v-for="feature in course.features" :key="feature" class="flex items-center gap-3 text-sm">
+                                            <div class="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                                                <i class="fas fa-check text-red-500 text-xs"></i>
+                                            </div>
+                                            <span class="text-gray-300">{{feature}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-auto space-y-3">
+                                    <div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-clock text-red-500/70 w-5"></i><span>{{course.duration}}</span></div>
+                                    <div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-video text-red-500/70 w-5"></i><span>{{course.modules_count}} modules vidéo</span></div>
+                                    <div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-certificate text-red-500/70 w-5"></i><span>Certification incluse</span></div>
+                                </div>
+                                <div class="mt-8 border-t border-white/5 pt-8">
+                                    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 text-center sm:text-left">
+                                        <div>
+                                            <span class="text-3xl md:text-4xl font-black katsuki-text">{{ formatPrice(course.price) }}€</span>
+                                            <span v-if="course.original_price" class="text-lg text-gray-500 line-through ml-3">{{ formatPrice(course.original_price) }}€</span>
+                                        </div>
+                                        <span v-if="course.spots" class="text-xs text-red-400 font-semibold animate-pulse">{{course.spots}} places restantes</span>
+                                    </div>
+                                    <button @click="enrollCourse(course.id)" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg shadow-red-600/20">
+                                        <span class="flex items-center justify-center gap-2">{{ enrollLabel(course) }} <i class="fas fa-arrow-right text-sm"></i></span>
+                                    </button>
+                                    <div v-if="isLoggedIn && courseProgress[course.id]" class="mt-4 text-center text-sm text-gray-400">
+                                        Progression : {{ courseProgress[course.id].completed }} / {{ courseProgress[course.id].total }} modules
+                                        <div class="h-2 bg-white/10 rounded-full mt-2 overflow-hidden"><div class="h-full katsuki-gradient" :style="{ width: progressPercent(course.id) + '%' }"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ ACCUEIL -->
+            <section v-if="currentView === 'home'" class="py-20 md:py-28 px-4 bg-black/30">
+                <div class="max-w-3xl mx-auto">
+                    <div class="text-center mb-12 reveal" data-reveal>
+                        <div class="inline-block mb-4 px-5 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-xs font-bold uppercase tracking-widest">FAQ</div>
+                        <h2 class="text-3xl md:text-5xl font-black">Questions <span class="katsuki-text">fréquentes</span></h2>
+                    </div>
+                    <div class="space-y-3 reveal" data-reveal>
+                        <div v-for="(faq, idx) in homeFAQ" :key="idx" class="card-glass rounded-2xl overflow-hidden">
+                            <button type="button" @click="faq.open = !faq.open" class="w-full p-5 md:p-6 flex justify-between items-center gap-4 text-left hover:bg-white/5 transition">
+                                <span class="font-semibold">{{ faq.question }}</span>
+                                <i :class="faq.open ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="text-red-500 flex-shrink-0"></i>
+                            </button>
+                            <div class="accordion-content px-5 md:px-6" :class="{ active: faq.open }">
+                                <p class="text-gray-400 text-sm leading-relaxed pb-4">{{ faq.answer }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-500 text-sm mt-8 reveal" data-reveal">Une autre question ? <a href="/auth/login.php" class="text-red-400 hover:underline">Contactez-nous via la messagerie</a> une fois inscrit.</p>
+                </div>
+            </section>
+
+            <!-- SECTION TÉMOIGNAGES -->
+            <section v-if="currentView === 'home' || currentView === 'philosophy'" class="py-20 md:py-32 px-4 bg-black/30 relative overflow-hidden">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <h2 class="text-4xl md:text-7xl font-black mb-6 mobile-title">Ils Ont <span class="katsuki-text">Transformé</span> Leur Trading</h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto">
+                            Des centaines de traders ont déjà franchi le pas. Voici leurs histoires, sans filtre, sans artifice.
+                        </p>
+                    </div>
+
+                    <!-- Grille responsive : les témoignages sont tous visibles, sans animation de défilement -->
+                    <div class="testimonials-grid">
+                        <div v-for="testimonial in testimonials" :key="testimonial.name"
+                             class="card-glass card-glass-hover rounded-3xl p-10 flex flex-col h-full">
+                            <div class="flex items-center gap-1 mb-6">
+                                <i v-for="star in 5" :key="star" class="fas fa-star text-yellow-500 text-sm"></i>
+                            </div>
+                            <p class="text-gray-300 leading-relaxed mb-8 italic flex-grow">"{{testimonial.quote}}"</p>
+                            <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                                <div class="w-14 h-14 katsuki-gradient rounded-2xl flex items-center justify-center font-bold text-xl">
+                                    {{testimonial.initials}}
+                                </div>
+                                <div>
+                                    <div class="font-bold">{{testimonial.name}}</div>
+                                    <div class="text-sm text-gray-500">{{testimonial.role}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION PSYCHOLOGIE -->
+            <section v-if="currentView === 'psychology'" class="pt-32 pb-32 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
+                            Le Mental
+                        </div>
+                        <h2 class="text-4xl md:text-7xl font-black mb-8 mobile-title">La Psychologie du <span class="katsuki-text">Vainqueur</span></h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
+                            Le trading est un sport de combat mental. Votre pire ennemi n'est pas le marché, 
+                            c'est vous-même. Apprenez à dompter votre esprit pour dompter les marchés.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-12 mb-20">
+                        <div class="card-glass rounded-3xl p-10 border-red-500/20 fade-in-up">
+                            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fas fa-skull text-red-500"></i> Anatomie d'un Échec</h3>
+                            <div class="space-y-6">
+                                <div class="flex gap-4"><span class="text-red-500 font-black text-2xl flex-shrink-0">01</span><div><h4 class="font-bold text-lg mb-2">L'Excès de Confiance Post-Gain</h4><p class="text-gray-400 text-sm">Après une série gagnante, le trader augmente ses risques, pense avoir "compris" le marché, et oublie que chaque trade est indépendant. L'euphorie est le prélude à la chute.</p></div></div>
+                                <div class="flex gap-4"><span class="text-red-500 font-black text-2xl flex-shrink-0">02</span><div><h4 class="font-bold text-lg mb-2">La Vengeance Après une Perte</h4><p class="text-gray-400 text-sm">Le "revenge trading" : vouloir se refaire immédiatement après une perte. Sans analyse, sans plan, juste l'émotion brute. C'est la voie royale vers la ruine du compte.</p></div></div>
+                                <div class="flex gap-4"><span class="text-red-500 font-black text-2xl flex-shrink-0">03</span><div><h4 class="font-bold text-lg mb-2">La Paralysie par l'Analyse</h4><p class="text-gray-400 text-sm">Trop d'indicateurs, trop d'analyses, trop d'avis extérieurs. Le trader ne prend plus de décision, rate des opportunités, et finit par entrer au pire moment, épuisé mentalement.</p></div></div>
+                            </div>
+                        </div>
+                        <div class="card-glass rounded-3xl p-10 border-green-500/20 fade-in-up stagger-2">
+                            <h3 class="text-2xl font-bold mb-6 flex items-center gap-3"><i class="fas fa-crown text-green-400"></i> Anatomie d'un Succès</h3>
+                            <div class="space-y-6">
+                                <div class="flex gap-4"><span class="text-green-400 font-black text-2xl flex-shrink-0">01</span><div><h4 class="font-bold text-lg mb-2">La Routine du Matin</h4><p class="text-gray-400 text-sm">Sport, méditation, revue des marchés. Le trader se prépare comme un athlète. Il ne trade pas pour ressentir des émotions, il trade parce qu'il a un plan à exécuter.</p></div></div>
+                                <div class="flex gap-4"><span class="text-green-400 font-black text-2xl flex-shrink-0">02</span><div><h4 class="font-bold text-lg mb-2">L'Acceptation de la Perte</h4><p class="text-gray-400 text-sm">Le trader gagnant sait qu'il va perdre. Il a intégré la perte dans son business plan. Une perte n'est pas un échec, c'est un coût opérationnel. Il coupe vite et passe au trade suivant.</p></div></div>
+                                <div class="flex gap-4"><span class="text-green-400 font-black text-2xl flex-shrink-0">03</span><div><h4 class="font-bold text-lg mb-2">Le Journal de Trading</h4><p class="text-gray-400 text-sm">Chaque trade est documenté : setup, émotion, résultat, leçon. Le trader gagnant étudie ses trades comme un scientifique étudie ses expériences : sans ego, avec curiosité.</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="fade-in-up stagger-4">
+                        <h3 class="text-3xl font-bold mb-10 text-center">Questions Fréquentes sur le <span class="katsuki-text">Mental</span></h3>
+                        <div class="space-y-4 max-w-4xl mx-auto">
+                            <div v-for="(faq, idx) in psychologyFAQ" :key="idx" class="card-glass rounded-2xl overflow-hidden">
+                                <div @click="faq.open = !faq.open" class="p-6 flex justify-between items-center cursor-pointer hover:bg-white/5 transition">
+                                    <h4 class="text-lg font-semibold">{{faq.question}}</h4>
+                                    <i :class="faq.open ? 'fas fa-minus' : 'fas fa-plus'" class="text-red-500 transition-transform duration-300" :style="{transform: faq.open ? 'rotate(180deg)' : 'rotate(0deg)'}"></i>
+                                </div>
+                                <div class="accordion-content px-6" :class="{ active: faq.open }">
+                                    <p class="text-gray-400 leading-relaxed pb-2">{{faq.answer}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION SERVICES AVEC CARTES PLEINES -->
+            <section v-if="currentView === 'services'" class="pt-32 pb-32 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="text-center mb-20 fade-in-up">
+                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">Services Premium</div>
+                        <h2 class="text-4xl md:text-7xl font-black mb-8 mobile-title">Des Outils à la Hauteur de Vos <span class="katsuki-text">Ambitions</span></h2>
+                        <p class="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">Au-delà de la formation, nous mettons à votre disposition des technologies de pointe pour automatiser, analyser et optimiser votre trading quotidien.</p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div v-for="service in services" :key="service.title" class="service-card card-glass card-glass-hover rounded-3xl p-10 flex flex-col h-full fade-in-up">
+                            <div class="flex items-start gap-6 mb-8">
+                                <div class="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 text-3xl" :class="service.color"><i :class="service.icon"></i></div>
+                                <div><h3 class="text-2xl font-bold mb-3">{{service.title}}</h3><p class="text-gray-400 leading-relaxed text-sm">{{service.fullDesc}}</p></div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 service-features">
+                                <div v-for="feature in service.features" :key="feature" class="flex items-center gap-2 text-sm bg-white/5 rounded-xl p-3"><i class="fas fa-check-circle text-green-500 text-xs"></i><span class="text-gray-300">{{feature}}</span></div>
+                            </div>
+                            <div class="mt-auto border-t border-white/5 pt-8">
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-4"><div class="text-center sm:text-left"><span class="text-3xl font-black katsuki-text">{{service.price}}</span><p class="text-xs text-gray-500 mt-1">{{service.billing}}</p></div><button @click="showAuthModal = true" class="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white px-8 py-4 rounded-2xl font-bold transition-all transform hover:scale-105">Souscrire</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA FINAL -->
+            <section v-if="currentView === 'home' || currentView === 'philosophy'" class="py-20 md:py-32 px-4 relative overflow-hidden">
+                <div class="absolute inset-0 katsuki-gradient opacity-5"></div>
+                <div class="max-w-4xl mx-auto text-center relative z-10 fade-in-up">
+                    <h2 class="text-4xl md:text-7xl font-black mb-10 mobile-title">Prêt à Devenir <span class="katsuki-text">Inarrêtable</span> ?</h2>
+                    <p class="text-gray-400 text-xl mb-12 leading-relaxed max-w-2xl mx-auto">Le marché continuera de tourner demain. La question est : serez-vous le même trader demain, ou aurez-vous fait le premier pas vers votre transformation ?</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-5 px-2"><button @click="isLoggedIn ? goToDashboard() : (showAuthModal = true)" class="bg-red-600 hover:bg-red-700 text-white px-8 md:px-12 py-5 rounded-2xl text-lg md:text-xl font-bold transition-all transform hover:scale-105 shadow-2xl shadow-red-600/30"><i class="fas fa-fire mr-3"></i>{{ isLoggedIn ? 'Mon espace formation' : "Rejoindre l'Élite" }}</button><button @click="setView('formation')" class="border-2 border-white/20 hover:border-red-500/50 px-8 md:px-12 py-5 rounded-2xl text-lg md:text-xl font-bold transition-all">Voir les Formations</button></div>
+                </div>
+            </section>
+        </main>
+
+        <button type="button" @click="scrollToTop" class="back-top" :class="{ visible: showBackTop }" aria-label="Retour en haut"><i class="fas fa-arrow-up"></i></button>
+
+        <!-- BARRE CTA STICKY -->
+        <div class="sticky-cta" :class="{ visible: showStickyCta && !isLoggedIn && currentView === 'home' }">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+                <p class="text-sm text-gray-300 text-center sm:text-left"><i class="fas fa-fire text-red-500 mr-2"></i>Formation gratuite disponible — commencez sans carte bancaire</p>
+                <div class="flex gap-3 w-full sm:w-auto">
+                    <button @click="setView('formation')" class="flex-1 sm:flex-none border border-white/20 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-white/5 transition">Voir les programmes</button>
+                    <button @click="showAuthModal = true" class="flex-1 sm:flex-none bg-red-600 hover:bg-red-700 px-5 py-2.5 rounded-xl text-sm font-bold transition">Créer mon compte</button>
+                </div>
+            </div>
+        </div>
+
+        <footer class="border-t border-white/5 bg-black/40">
+            <div class="max-w-7xl mx-auto px-4 py-20">
+                <div class="grid md:grid-cols-5 gap-12 mb-16">
+                    <div class="md:col-span-2"><div class="flex items-center gap-3 mb-6"><div class="w-12 h-12 katsuki-gradient rounded-xl flex items-center justify-center font-black text-lg">K</div><span class="text-xl font-black italic">Katsuki <span class="text-red-500">Trading</span></span></div><p class="text-gray-400 text-sm leading-relaxed mb-6 max-w-md">Nous formons l'élite des traders depuis 2017. Notre méthode, forgée dans le feu de l'expérience réelle des marchés, a transformé des milliers de traders à travers le monde.</p><div class="flex gap-3"><a v-for="social in socials" :key="social.name" :href="social.url" class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center hover:bg-red-600/20 hover:text-red-500 transition-all duration-300 text-lg"><i :class="social.icon"></i></a></div></div>
+                    <div><h5 class="font-bold mb-6 text-sm uppercase tracking-wider">Navigation</h5><div class="space-y-3"><div v-for="item in navItems" :key="item.id" @click="setView(item.id)" class="text-gray-400 text-sm hover:text-red-500 cursor-pointer transition flex items-center gap-2"><i :class="item.icon" class="text-xs w-4"></i>{{item.label}}</div></div></div>
+                    <div><h5 class="font-bold mb-6 text-sm uppercase tracking-wider">Ressources</h5><div class="space-y-3 text-gray-400 text-sm"><a href="/auth/login.php" class="hover:text-red-500 transition block">Espace formation</a><div @click="setView('formation')" class="hover:text-red-500 cursor-pointer transition">Catalogue formations</div><div @click="setView('psychology')" class="hover:text-red-500 cursor-pointer transition">Psychologie du trader</div><div @click="setView('services')" class="hover:text-red-500 cursor-pointer transition">Services premium</div></div></div>
+                    <div><h5 class="font-bold mb-6 text-sm uppercase tracking-wider">Contact</h5><div class="space-y-4 text-sm text-gray-400"><div class="flex items-center gap-3"><i class="fas fa-envelope text-red-500 w-5"></i><span>elite@katsukitrading.com</span></div><div class="flex items-center gap-3"><i class="fas fa-headset text-red-500 w-5"></i><span>Support 7j/7</span></div><div class="flex items-center gap-3"><i class="fas fa-shield-halved text-red-500 w-5"></i><span>Paiement Sécurisé</span></div></div></div>
+                </div>
+                <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4"><p class="text-sm text-gray-500 text-center md:text-left">&copy; 2025 Katsuki Trading. Tous droits réservés. Le trading comporte des risques importants.</p><div class="flex flex-wrap justify-center gap-4 md:gap-8 text-sm text-gray-500 footer-links"><span class="hover:text-red-500 cursor-pointer transition">Conditions Générales</span><span class="hover:text-red-500 cursor-pointer transition">Politique de Confidentialité</span><span class="hover:text-red-500 cursor-pointer transition">Mentions Légales</span><span class="hover:text-red-500 cursor-pointer transition">Avertissement Risques</span></div></div>
+            </div>
+        </footer>
+
+        <!-- Modal d'authentification (avec onglets Connexion / Inscription) -->
+        <div v-if="showAuthModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" @click.self="showAuthModal = false">
+            <div class="card-glass rounded-3xl p-8 w-full max-w-md fade-in-up relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 katsuki-gradient-animated"></div>
+                <div class="flex justify-between items-center mb-6"><div><h3 class="text-2xl font-black">{{ authMode === 'login' ? 'Connexion' : 'Inscription' }}</h3><p class="text-gray-400 text-sm">{{ authMode === 'login' ? 'Accédez à votre compte élite' : 'Créez votre compte gratuitement' }}</p></div><button @click="showAuthModal = false" class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition"><i class="fas fa-times"></i></button></div>
+                <p v-if="authError" class="mb-4 text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">{{ authError }}</p>
+                <form @submit.prevent="authMode === 'login' ? login() : register()" class="space-y-5">
+                    <div v-if="authMode === 'register'"><label class="text-sm text-gray-400 block mb-2 font-medium">Nom complet</label><input v-model="registerName" type="text" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="Jean Dupont"></div>
+                    <div><label class="text-sm text-gray-400 block mb-2 font-medium">Email</label><input v-model="authEmail" type="email" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="email@exemple.com"></div>
+                    <div><label class="text-sm text-gray-400 block mb-2 font-medium">Mot de passe</label><input v-model="authPassword" type="password" required class="w-full bg-white/5 border border-white/10 rounded-2xl px-4 py-3 text-white focus:border-red-500/50 focus:outline-none" placeholder="••••••••"></div>
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-2xl font-bold transition-all">{{ authMode === 'login' ? 'Se connecter' : 'Créer mon compte' }}</button>
+                </form>
+                <div class="mt-6 text-center text-sm text-gray-400">{{ authMode === 'login' ? "Pas encore membre ?" : "Déjà un compte ?" }} <span @click="authMode = authMode === 'login' ? 'register' : 'login'" class="text-red-400 font-bold cursor-pointer hover:underline">{{ authMode === 'login' ? 'Créer un compte' : 'Se connecter' }}</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        const { createApp, ref, watch, onMounted } = Vue;
+        createApp({
+            setup() {
+                const currentView = ref('home');
+                const scrolled = ref(false);
+                const showBackTop = ref(false);
+                const showStickyCta = ref(false);
+                const statsAnimated = ref(false);
+                const mobileMenuOpen = ref(false);
+                const showAuthModal = ref(false);
+                const authMode = ref('login');
+                const authEmail = ref('');
+                const authPassword = ref('');
+                const registerName = ref('');
+                const authError = ref('');
+                const isLoggedIn = ref(false);
+                const user = ref({});
+                const courses = ref([]);
+                const coursesLoading = ref(true);
+                const courseProgress = ref({});
+
+                function getCookie(name) {
+                    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+                    return match ? decodeURIComponent(match[1]) : '';
+                }
+
+                function persistToken(value) {
+                    if (value) {
+                        localStorage.setItem('katsuki_token', value);
+                        document.cookie = 'katsuki_token=' + encodeURIComponent(value) + '; path=/; max-age=86400; samesite=lax';
+                    } else {
+                        localStorage.removeItem('katsuki_token');
+                        document.cookie = 'katsuki_token=; Max-Age=0; path=/';
+                    }
+                }
+
+                const token = ref(localStorage.getItem('katsuki_token') || getCookie('katsuki_token') || '');
+
+                const navItems = [
+                    { id: 'home', label: 'Accueil', icon: 'fas fa-home' },
+                    { id: 'formation', label: 'Formations', icon: 'fas fa-graduation-cap' },
+                    { id: 'psychology', label: 'Mental', icon: 'fas fa-brain' },
+                    { id: 'services', label: 'Services', icon: 'fas fa-cogs' },
+                    { id: 'philosophy', label: 'Philosophie', icon: 'fas fa-scroll' }
+                ];
+
+                const pillars = [
+                    { title: "Discipline de Fer", icon: "fas fa-shield-halved", shortDesc: "L'art de suivre un plan de trading sans déviation émotionnelle. La discipline est la clé de la rentabilité." },
+                    { title: "Gestion du Risque", icon: "fas fa-chart-pie", shortDesc: "Protéger son capital avant de chercher le gain. Ratios de risque stricts pour survivre sur tous les marchés." },
+                    { title: "Mentalité de Guerrier", icon: "fas fa-brain", shortDesc: "Dompter la peur et l'avidité grâce aux neurosciences. Le trading est à 80% un jeu psychologique." },
+                    { title: "Analyse Stratégique", icon: "fas fa-chart-line", shortDesc: "Des configurations techniques de haute probabilité testées sur des années de données réelles." },
+                    { title: "Indépendance Financière", icon: "fas fa-crown", shortDesc: "Devenir son propre patron en maîtrisant les compétences requises pour dominer les marchés mondiaux." }
+                ];
+
+                const testimonials = [
+                    { name: "Thomas L.", initials: "TL", role: "Trader Particulier (Rentable)", quote: "La méthode Katsuki a totalement changé ma vision du risque. Je suis passé de perdant régulier à rentable en moins de 6 mois." },
+                    { name: "Sarah M.", initials: "SM", role: "Prop Firm Trader", quote: "Grâce à la formation avancée et à la préparation mentale, j'ai réussi mon évaluation de 100k$ chez FTMO dès le premier essai !" },
+                    { name: "David K.", initials: "DK", role: "Investisseur & Trader", quote: "Des explications claires, une communauté active et des outils de pointe. C'est de loin le meilleur investissement pour ma liberté financière." }
+                ];
+
+                const psychologyFAQ = ref([
+                    { question: "Comment gérer le stress après une série de pertes ?", answer: "La clé réside dans l'acceptation statistique. Si votre méthode a une espérance de gain positive, une série de pertes est simplement un coût opérationnel incontournable. Réduisez la taille de vos positions temporairement pour regagner confiance.", open: false },
+                    { question: "Qu'est-ce que le FOMO et comment l'éviter ?", answer: "Le FOMO (Fear of Missing Out) est la peur de rater une opportunité. Pour le contrer, fixez des règles d'entrée ultra-strictes. Si le marché est parti sans vous, dites-vous qu'il y aura toujours une autre opportunité. Pas de plan, pas de trade.", open: false },
+                    { question: "Combien d'heures par jour doit-on passer devant les graphiques ?", answer: "Plus de temps ne signifie pas plus de gains. Les meilleurs traders passent 1 à 2 heures par jour pour analyser et placer leurs alertes, puis s'éloignent des écrans pour éviter le sur-trading et la fatigue décisionnelle.", open: false }
+                ]);
+
+                const services = [
+                    { title: "Katsuki Terminal", fullDesc: "Notre outil d'analyse et de gestion des risques directement intégré. Recevez des signaux haute probabilité en temps réel.", color: "bg-red-500/10 text-red-500", icon: "fas fa-terminal", features: ["Signaux en temps réel", "Calculateur de lot auto", "Alertes SMS/Telegram", "Accès API Premium"], price: "49€", billing: "par mois, sans engagement" },
+                    { title: "Mentorat d'Élite", fullDesc: "Accompagnement individuel hebdomadaire avec un trader professionnel pour auditer vos trades et ajuster votre psychologie.", color: "bg-yellow-500/10 text-yellow-500", icon: "fas fa-user-tie", features: ["Session 1-on-1 zoom", "Audit de journal de trade", "Plan de trading sur mesure", "Support WhatsApp privé 7j/7"], price: "299€", billing: "par mois, places limitées" }
+                ];
+
+                const socials = [
+                    { name: "Youtube", url: "#", icon: "fab fa-youtube" },
+                    { name: "Instagram", url: "#", icon: "fab fa-instagram" },
+                    { name: "Twitter", url: "#", icon: "fab fa-x-twitter" },
+                    { name: "Discord", url: "#", icon: "fab fa-discord" }
+                ];
+
+                const heroPreview = [
+                    { label: 'Progression globale', value: '68%', pct: 68 },
+                    { label: 'Module en cours', value: 'Risk Mgmt', pct: 45 },
+                    { label: 'Examen réussi', value: '3/5', pct: 60 }
+                ];
+
+                const marqueeTags = [
+                    'Forex', 'Indices', 'Crypto', 'Prop Firm', 'Risk Management',
+                    'Psychologie', 'Price Action', 'Smart Money', 'Journal de trade', 'FTMO Ready'
+                ];
+
+                const platformFeatures = [
+                    { icon: 'fas fa-video', title: 'Modules vidéo', desc: 'Leçons en vidéo HD ou intégration YouTube, module par module.' },
+                    { icon: 'fas fa-headphones', title: 'Audio & PDF', desc: 'Écoutez ou lisez le contenu à votre rythme, où que vous soyez.' },
+                    { icon: 'fas fa-volume-up', title: 'Lecture vocale', desc: 'Le texte des leçons lu à voix haute directement dans le navigateur.' },
+                    { icon: 'fas fa-robot', title: 'Coach IA', desc: 'Assistant intelligent pour répondre à vos questions de trading.' },
+                    { icon: 'fas fa-clipboard-check', title: 'Examens', desc: 'Validez vos acquis avec des quiz et certifications.' },
+                    { icon: 'fas fa-comments', title: 'Messagerie', desc: 'Échangez avec l\'admin et recevez vos notifications de paiement.' },
+                    { icon: 'fas fa-chart-line', title: 'Suivi progression', desc: 'Tableau de bord avec avancement module par module.' },
+                    { icon: 'fas fa-lock', title: 'Accès sécurisé', desc: 'Formations payantes débloquées après validation de paiement.' }
+                ];
+
+                const howItWorks = [
+                    { title: 'Créez votre compte', desc: 'Inscription gratuite en quelques secondes. Accédez immédiatement aux formations gratuites.' },
+                    { title: 'Validez votre accès', desc: 'Pour les programmes payants, envoyez votre preuve de paiement. L\'admin valide sous 24–48h.' },
+                    { title: 'Formez-vous & progressez', desc: 'Suivez les modules, passez les examens, utilisez le coach IA et atteignez vos objectifs.' }
+                ];
+
+                const liveStats = ref([
+                    { label: 'Traders formés', value: 2400, suffix: '+', display: 0 },
+                    { label: 'Modules disponibles', value: 48, suffix: '+', display: 0 },
+                    { label: 'Taux de satisfaction', value: 97, suffix: '%', display: 0 },
+                    { label: 'Années d\'expérience', value: 8, suffix: '+', display: 0 }
+                ]);
+
+                const marketTicker = [
+                    { pair: 'EUR/USD', price: '1.0842', change: '+0.12%', up: true },
+                    { pair: 'GBP/USD', price: '1.2631', change: '-0.08%', up: false },
+                    { pair: 'XAU/USD', price: '2341.50', change: '+0.34%', up: true },
+                    { pair: 'BTC/USD', price: '67240', change: '+1.21%', up: true },
+                    { pair: 'US30', price: '39124', change: '-0.15%', up: false },
+                    { pair: 'NAS100', price: '18203', change: '+0.42%', up: true }
+                ];
+
+                const compareBad = [
+                    'YouTube et signaux Telegram sans méthode',
+                    'Pas de gestion du risque ni de journal de trade',
+                    'Émotions non maîtrisées après chaque perte',
+                    'Aucun suivi ni validation des acquis',
+                    'Compte explosé en quelques semaines'
+                ];
+
+                const compareGood = [
+                    'Parcours structuré module par module',
+                    'Vidéo, audio, PDF et lecture vocale intégrée',
+                    'Examens pour valider chaque étape',
+                    'Coach IA + messagerie avec l\'équipe admin',
+                    'Accès progressif selon votre niveau'
+                ];
+
+                const homeFAQ = ref([
+                    { question: 'Puis-je commencer gratuitement ?', answer: 'Oui. Certaines formations sont gratuites (prix à 0€). Créez un compte et accédez immédiatement au contenu sans paiement.', open: false },
+                    { question: 'Comment fonctionne le paiement des formations premium ?', answer: 'Vous effectuez le virement ou paiement convenu, puis téléversez votre preuve (capture ou reçu) sur la plateforme. L\'admin valide sous 24 à 48h et vous recevez une notification par messagerie.', open: false },
+                    { question: 'Ai-je besoin d\'expérience préalable ?', answer: 'Non pour le parcours débutant. Nos formations sont classées par niveau (Débutant, Avancé, Élite) pour vous accompagner quel que soit votre point de départ.', open: false },
+                    { question: 'Le coach IA remplace-t-il un mentor humain ?', answer: 'Il complète la formation : réponses instantanées, révisions, aide sur les concepts. Pour un accompagnement humain approfondi, consultez nos services Mentorat d\'Élite.', open: false },
+                    { question: 'Puis-je suivre la formation sur mobile ?', answer: 'Oui. La plateforme est responsive : vidéos, audio, PDF et texte sont accessibles depuis votre téléphone, tablette ou ordinateur.', open: false }
+                ]);
+
+                function formatPrice(value) {
+                    const num = Number(value || 0);
+                    return Number.isInteger(num) ? String(num) : num.toFixed(0);
+                }
+
+                function enrollLabel(course) {
+                    if (!isLoggedIn.value) return Number(course.price) > 0 ? "S'inscrire — paiement" : "Commencer gratuitement";
+                    return Number(course.price) > 0 ? 'Demander l\'accès' : 'Continuer la formation';
+                }
+
+                function progressPercent(courseId) {
+                    const p = courseProgress.value[courseId];
+                    if (!p || !p.total) return 0;
+                    return Math.round((p.completed / p.total) * 100);
+                }
+
+                function setView(view) {
+                    currentView.value = view;
+                    mobileMenuOpen.value = false;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                function goToDashboard() {
+                    const role = user.value?.role || 'student';
+                    window.location.href = role === 'admin' ? '/admin/dashboard.php' : '/student/dashboard.php';
+                }
+
+                async function apiCall(endpoint, method = 'GET', data = null) {
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token.value) headers['Authorization'] = `Bearer ${token.value}`;
+                    const config = { method, headers, credentials: 'same-origin' };
+                    if (data) config.body = JSON.stringify(data);
+
+                    const response = await fetch(`${API_BASE}${endpoint}`, config);
+                    const rawText = await response.text();
+                    let parsedBody = null;
+                    try {
+                        parsedBody = rawText ? JSON.parse(rawText) : null;
+                    } catch (err) {
+                        parsedBody = null;
+                    }
+
+                    if (!response.ok) {
+                        const message = parsedBody?.error || parsedBody?.message || `Erreur serveur (${response.status})`;
+                        throw new Error(message);
+                    }
+                    return parsedBody;
+                }
+
+                async function login() {
+                    authError.value = '';
+                    try {
+                        const res = await apiCall('/login', 'POST', { email: authEmail.value, password: authPassword.value });
+                        if (!res || !res.token || !res.user) {
+                            throw new Error('Réponse invalide du serveur (token ou user manquant)');
+                        }
+                        token.value = res.token;
+                        persistToken(res.token);
+                        user.value = res.user;
+                        isLoggedIn.value = true;
+                        showAuthModal.value = false;
+                        authEmail.value = '';
+                        authPassword.value = '';
+                        await loadCourses();
+                        await loadUserProgress();
+                        setView('formation');
+                    } catch (e) {
+                        authError.value = e.message;
+                    }
+                }
+
+                async function register() {
+                    authError.value = '';
+                    try {
+                        const res = await apiCall('/register', 'POST', { email: authEmail.value, password: authPassword.value, name: registerName.value });
+                        console.log('Register response:', res);
+                        if (!res) {
+                            throw new Error('Réponse vide du serveur');
+                        }
+                        if (res.error) {
+                            throw new Error(res.error);
+                        }
+                        if (!res.token || !res.user) {
+                            throw new Error('Réponse invalide : token=' + (res.token ? 'ok' : 'manquant') + ', user=' + (res.user ? 'ok' : 'manquant') + '. Réponse complète: ' + JSON.stringify(res));
+                        }
+                        token.value = res.token;
+                        persistToken(res.token);
+                        user.value = res.user;
+                        isLoggedIn.value = true;
+                        showAuthModal.value = false;
+                        registerName.value = '';
+                        authEmail.value = '';
+                        authPassword.value = '';
+                        await loadCourses();
+                        setView('formation');
+                    } catch (e) {
+                        authError.value = e.message;
+                    }
+                }
+
+                function logout() {
+                    persistToken('');
+                    token.value = '';
+                    isLoggedIn.value = false;
+                    user.value = {};
+                    courseProgress.value = {};
+                    currentView.value = 'home';
+                }
+
+                async function loadCourses() {
+                    coursesLoading.value = true;
+                    try {
+                        const data = await apiCall('/courses');
+                        courses.value = Array.isArray(data) ? data : [];
+                    } catch (e) {
+                        console.error(e);
+                        courses.value = [];
+                    } finally {
+                        coursesLoading.value = false;
+                    }
+                }
+
+                async function loadUserProgress() {
+                    if (!isLoggedIn.value) return;
+                    try {
+                        const progress = await apiCall('/progress');
+                        // Grouper par course
+                        const grouped = {};
+                        for (let p of progress) {
+                            if (!grouped[p.course_id]) grouped[p.course_id] = { completed: 0, total: 0 };
+                            if (p.completed) grouped[p.course_id].completed++;
+                        }
+                        // Pour chaque course, récupérer total modules
+                        for (let course of courses.value) {
+                            const modules = await apiCall(`/courses/${course.id}/modules`);
+                            grouped[course.id] = grouped[course.id] || { completed: 0, total: modules.length };
+                            grouped[course.id].total = modules.length;
+                        }
+                        courseProgress.value = grouped;
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                async function enrollCourse(courseId) {
+                    if (!isLoggedIn.value) {
+                        showAuthModal.value = true;
+                        return;
+                    }
+                    const course = courses.value.find((c) => Number(c.id) === Number(courseId));
+                    const isPaid = course && Number(course.price) > 0;
+                    window.location.href = isPaid
+                        ? '/student/enroll.php?courseId=' + courseId
+                        : '/student/course.php?courseId=' + courseId;
+                }
+
+                async function checkAuth() {
+                    if (!token.value) {
+                        await loadCourses();
+                        return;
+                    }
+                    try {
+                        const userData = await apiCall('/user');
+                        user.value = userData;
+                        isLoggedIn.value = true;
+                        await loadCourses();
+                        await loadUserProgress();
+                    } catch (e) {
+                        persistToken('');
+                        token.value = '';
+                        await loadCourses();
+                    }
+                }
+
+                function scrollToTop() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+
+                function animateCounters() {
+                    if (statsAnimated.value) return;
+                    statsAnimated.value = true;
+                    const duration = 1800;
+                    const start = performance.now();
+                    function frame(now) {
+                        const t = Math.min((now - start) / duration, 1);
+                        const ease = 1 - Math.pow(1 - t, 3);
+                        liveStats.value.forEach((stat) => {
+                            stat.display = Math.round(stat.value * ease);
+                        });
+                        if (t < 1) requestAnimationFrame(frame);
+                    }
+                    requestAnimationFrame(frame);
+                }
+
+                function initScrollReveal() {
+                    const els = document.querySelectorAll('[data-reveal]:not(.revealed)');
+                    if (!els.length) return;
+                    if (!('IntersectionObserver' in window)) {
+                        els.forEach((el) => {
+                            el.classList.add('revealed');
+                            if (el.hasAttribute('data-stats-counter')) animateCounters();
+                        });
+                        return;
+                    }
+                    const io = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (!entry.isIntersecting) return;
+                            entry.target.classList.add('revealed');
+                            if (entry.target.hasAttribute('data-stats-counter')) animateCounters();
+                            io.unobserve(entry.target);
+                        });
+                    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+                    els.forEach((el) => io.observe(el));
+                }
+
+                const handleScroll = () => {
+                    scrolled.value = window.scrollY > 30;
+                    showBackTop.value = window.scrollY > 500;
+                    showStickyCta.value = window.scrollY > 900;
+                };
+                onMounted(() => {
+                    window.addEventListener('scroll', handleScroll);
+                    checkAuth();
+                    setTimeout(initScrollReveal, 120);
+                });
+
+                watch(currentView, () => {
+                    if (currentView.value === 'formation' && isLoggedIn.value) loadUserProgress();
+                    if (currentView.value === 'home') setTimeout(initScrollReveal, 80);
+                });
+
+                return { currentView, scrolled, showBackTop, showStickyCta, mobileMenuOpen, showAuthModal, authMode, authEmail, authPassword, registerName, authError, isLoggedIn, user, courses, coursesLoading, courseProgress, navItems, login, register, logout, enrollCourse, enrollLabel, goToDashboard, setView, scrollToTop, formatPrice, progressPercent, pillars, testimonials, psychologyFAQ, services, socials, heroPreview, marqueeTags, platformFeatures, howItWorks, liveStats, marketTicker, compareBad, compareGood, homeFAQ };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

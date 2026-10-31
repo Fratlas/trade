@@ -1,0 +1,14 @@
+DirectoryIndex index.html index.php
+
+RewriteEngine On
+
+RewriteRule ^api/(diagnostic\.php|setup\.php|setup-chat\.php|setup-enrollment\.php)$ public/$1 [L]
+RewriteRule ^api(/.*)?$ public/index.php [QSA,L]
+
+RewriteRule ^(admin|student)/(.+)\.html$ /$1/$2.php [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^$ index.php [L]

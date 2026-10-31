@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etudiants | Katsuki Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body>
+  <div class="kt-shell">
+    <aside id="sidebar" class="kt-sidebar"><div class="kt-brand"><span class="kt-logo">K</span><span>Katsuki<small>Admin</small></span></div><nav id="nav" class="kt-nav"></nav><nav class="kt-nav"><button onclick="KTAuth.logout()">Deconnexion</button></nav></aside>
+    <main class="kt-main">
+      <div class="kt-topbar"><div><button class="kt-btn kt-mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">Menu</button><h1 class="kt-title">Etudiants</h1></div><button id="csv" class="kt-btn primary">Exporter CSV</button></div>
+      <input id="search" class="kt-input" placeholder="Rechercher par nom ou email" style="margin-bottom:16px">
+      <section class="kt-card kt-card-pad"><table class="kt-table"><thead><tr><th>Nom</th><th>Email</th><th>Progression</th><th>Derniere connexion</th><th>Examens</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></section>
+      <section id="detail" class="kt-card kt-card-pad" style="display:none;margin-top:22px"></section>
+    </main>
+  </div>
+  <script src="/assets/js/api.js"></script><script src="/assets/js/auth.js"></script><script src="/assets/js/ui.js"></script>
+  <script>
+    KTAuth.checkAuth("admin");
+    document.getElementById("nav").innerHTML = KTUi.sidebar("admin", "students.html");
+    let students = [];
+    function render(list) {
+      document.getElementById("rows").innerHTML = list.map((s) => `<tr><td>${KTUi.escapeHtml(s.name)}</td><td>${KTUi.escapeHtml(s.email)}</td><td>${s.completed_modules} modules</td><td>${KTUi.formatDate(s.last_login)}</td><td>${s.exam_attempts}</td><td><button class="kt-btn" data-id="${s.id}">Voir</button></td></tr>`).join("");
+      document.querySelectorAll("[data-id]").forEach((button) => button.addEventListener("click", () => show(button.dataset.id)));
+    }
+    async function show(id) {
+      const [progress, exams] = await Promise.all([KTApi.get(`/admin/students/${id}/progress`), KTApi.get(`/admin/students/${id}/exams`)]);
+      const detail = document.getElementById("detail");
+      detail.style.display = "block";
+      detail.innerHTML = `<h2>Profil etudiant</h2><h3>Progression</h3><table class="kt-table">${progress.slice(0, 20).map((p) => `<tr><td>${KTUi.escapeHtml(p.course_title)}</td><td>${KTUi.escapeHtml(p.module_title)}</td><td>${Number(p.completed) ? "Termine" : "A faire"}</td></tr>`).join("")}</table><h3>Examens</h3><table class="kt-table">${exams.map((e) => `<tr><td>${KTUi.escapeHtml(e.exam_title)}</td><td>${e.percentage}/100</td><td>${Number(e.passed) ? "Reussi" : "Echoue"}</td></tr>`).join("") || '<tr><td class="kt-muted">Aucun resultat</td></tr>'}</table>`;
+    }
+    document.getElementById("search").addEventListener("input", (event) => {
+      const q = event.target.value.toLowerCase();
+      render(students.filter((s) => (s.name + s.email).toLowerCase().includes(q)));
+    });
+    document.getElementById("csv").addEventListener("click", () => {
+      const lines = ["name,email,completed_modules,exam_attempts"].concat(students.map((s) => `"${s.name}","${s.email}",${s.completed_modules},${s.exam_attempts}`));
+      const url = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv" }));
+      const a = document.createElement("a"); a.href = url; a.download = "etudiants.csv"; a.click(); URL.revokeObjectURL(url);
+    });
+    KTApi.get("/admin/students").then((data) => { students = data; render(data); }).catch((error) => KTUi.toast(error.message));
+  </script>
+</body>
+</html>

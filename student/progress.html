@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progression | Katsuki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="kt-shell">
+    <aside id="sidebar" class="kt-sidebar"><div class="kt-brand"><span class="kt-logo">K</span><span>Katsuki<small>Student</small></span></div><nav id="nav" class="kt-nav"></nav><nav class="kt-nav"><button onclick="KTAuth.logout()">Deconnexion</button></nav></aside>
+    <main class="kt-main">
+      <div class="kt-topbar"><div><button class="kt-btn kt-mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">Menu</button><h1 class="kt-title">Ma progression</h1></div><button id="certBtn" class="kt-btn primary">Telecharger mon certificat</button></div>
+      <section class="kt-grid cols-2">
+        <article class="kt-card kt-card-pad"><h2>Vue globale</h2><canvas id="pie"></canvas></article>
+        <article class="kt-card kt-card-pad"><h2>Notes</h2><canvas id="line"></canvas></article>
+      </section>
+      <section class="kt-card kt-card-pad" style="margin-top:22px">
+        <h2>Detail par formation</h2>
+        <table class="kt-table"><thead><tr><th>Formation</th><th>Module</th><th>Statut</th><th>Completion</th></tr></thead><tbody id="rows"></tbody></table>
+      </section>
+    </main>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="/assets/js/api.js"></script><script src="/assets/js/auth.js"></script><script src="/assets/js/ui.js"></script>
+  <script>
+    const user = KTAuth.checkAuth("student");
+    document.getElementById("nav").innerHTML = KTUi.sidebar("student", "progress.html");
+    async function load() {
+      const [courses, progress] = await Promise.all([KTApi.get("/courses"), KTApi.get("/progress")]);
+      let done = progress.filter((row) => Number(row.completed) === 1).length;
+      let total = courses.reduce((sum, course) => sum + Number(course.modules_count || 0), 0);
+      new Chart(document.getElementById("pie"), { type: "doughnut", data: { labels: ["Termines", "Restants"], datasets: [{ data: [done, Math.max(total - done, 0)], backgroundColor: ["#c9a84c", "#242424"] }] }, options: { plugins: { legend: { labels: { color: "#fff" } } } } });
+      new Chart(document.getElementById("line"), { type: "line", data: { labels: progress.map((_, i) => "M" + (i + 1)), datasets: [{ label: "Score", data: progress.map((row) => row.score || 0), borderColor: "#c9a84c" }] }, options: { scales: { x: { ticks: { color: "#a0a0a0" } }, y: { ticks: { color: "#a0a0a0" } } }, plugins: { legend: { labels: { color: "#fff" } } } } });
+      document.getElementById("rows").innerHTML = progress.map((row) => `<tr><td>${row.course_id}</td><td>${row.module_id}</td><td>${Number(row.completed) ? "Termine" : "En cours"}</td><td>${KTUi.formatDate(row.completed_at)}</td></tr>`).join("") || '<tr><td colspan="4" class="kt-muted">Aucune progression enregistree.</td></tr>';
+    }
+    document.getElementById("certBtn").addEventListener("click", () => {
+      const doc = new jspdf.jsPDF({ orientation: "landscape" });
+      doc.setFillColor(10, 10, 10); doc.rect(0, 0, 297, 210, "F");
+      doc.setDrawColor(201, 168, 76); doc.setLineWidth(2); doc.rect(12, 12, 273, 186);
+      doc.setTextColor(201, 168, 76); doc.setFontSize(30); doc.text("Certificat Katsuki Trading", 148, 58, { align: "center" });
+      doc.setTextColor(255, 255, 255); doc.setFontSize(18); doc.text("Certifie que " + (user ? user.name : "l'etudiant") + " a suivi la formation Katsuki Trading.", 148, 102, { align: "center" });
+      doc.setFontSize(12); doc.text(new Date().toLocaleDateString("fr-FR"), 148, 142, { align: "center" });
+      doc.save("certificat-katsuki.pdf");
+    });
+    load().catch((error) => KTUi.toast(error.message));
+  </script>
+</body>
+</html>

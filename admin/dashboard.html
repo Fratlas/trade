@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin | Katsuki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="kt-shell">
+    <aside id="sidebar" class="kt-sidebar"><div class="kt-brand"><span class="kt-logo">K</span><span>Katsuki<small>Admin</small></span></div><nav id="nav" class="kt-nav"></nav><nav class="kt-nav"><button onclick="KTAuth.logout()">Deconnexion</button></nav></aside>
+    <main class="kt-main">
+      <div class="kt-topbar"><div><button class="kt-btn kt-mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">Menu</button><h1 class="kt-title">Dashboard admin</h1><p class="kt-muted">Pilotage des formations et des etudiants.</p></div><input class="kt-input" style="max-width:320px" placeholder="Recherche globale"></div>
+      <section id="kpis" class="kt-grid cols-4"></section>
+      <section class="kt-grid cols-2" style="margin-top:22px">
+        <article class="kt-card kt-card-pad"><h2>Inscriptions</h2><canvas id="bar"></canvas></article>
+        <article class="kt-card kt-card-pad"><h2>Taux de completion</h2><canvas id="line"></canvas></article>
+      </section>
+      <section class="kt-card kt-card-pad" style="margin-top:22px"><h2>Top etudiants</h2><table class="kt-table"><tbody id="topRows"></tbody></table></section>
+    </main>
+  </div>
+  <script src="/assets/js/api.js"></script><script src="/assets/js/auth.js"></script><script src="/assets/js/ui.js"></script>
+  <script>
+    KTAuth.checkAuth("admin");
+    document.getElementById("nav").innerHTML = KTUi.sidebar("admin", "dashboard.html");
+    async function load() {
+      const [students, courses, progress, results] = await Promise.all([KTApi.get("/admin/students"), KTApi.get("/courses"), KTApi.get("/admin/progress"), KTApi.get("/admin/exam-results")]);
+      const completed = progress.filter((row) => Number(row.completed) === 1).length;
+      const avgCompletion = progress.length ? Math.round(completed / progress.length * 100) : 0;
+      const avgGrade = results.length ? Math.round(results.reduce((sum, row) => sum + Number(row.percentage || 0), 0) / results.length) : 0;
+      document.getElementById("kpis").innerHTML = [
+        ["Etudiants inscrits", students.length],
+        ["Formations actives", courses.length],
+        ["Completion moyenne", avgCompletion + "%"],
+        ["Note moyenne", avgGrade + "/100"]
+      ].map(([label, value]) => `<article class="kt-card kt-card-pad"><span class="kt-badge">${label}</span><h2 style="font-size:42px">${value}</h2></article>`).join("");
+      new Chart(document.getElementById("bar"), { type: "bar", data: { labels: students.map((s) => KTUi.formatDate(s.created_at)), datasets: [{ label: "Inscriptions", data: students.map(() => 1), backgroundColor: "#c9a84c" }] }, options: { plugins: { legend: { labels: { color: "#fff" } } }, scales: { x: { ticks: { color: "#a0a0a0" } }, y: { ticks: { color: "#a0a0a0" } } } } });
+      new Chart(document.getElementById("line"), { type: "line", data: { labels: courses.map((c) => c.title), datasets: [{ label: "Completion", data: courses.map(() => avgCompletion), borderColor: "#c9a84c" }] }, options: { plugins: { legend: { labels: { color: "#fff" } } }, scales: { x: { ticks: { color: "#a0a0a0" } }, y: { ticks: { color: "#a0a0a0" } } } } });
+      document.getElementById("topRows").innerHTML = students.slice().sort((a, b) => Number(b.completed_modules) - Number(a.completed_modules)).slice(0, 5).map((s) => `<tr><td>${KTUi.escapeHtml(s.name)}</td><td>${s.completed_modules} modules</td><td>${s.exams_passed} examens reussis</td></tr>`).join("");
+    }
+    load().catch((error) => KTUi.toast(error.message));
+  </script>
+</body>
+</html>

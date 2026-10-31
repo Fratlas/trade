@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assistant IA admin | Katsuki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body>
+  <main class="kt-main">
+    <section class="kt-chat">
+      <aside class="kt-card kt-card-pad">
+        <div class="kt-brand"><span class="kt-logo">K</span><span>Katsuki<small>Admin IA</small></span></div>
+        <nav class="kt-nav">
+          <a href="/admin/dashboard.html">Retour admin</a>
+          <button data-topic="Creer un plan de formation trading">Contenu pedagogique</button>
+          <button data-topic="Analyser les performances des etudiants">Analyse etudiants</button>
+          <button data-topic="Generer un examen de trading">Examens</button>
+        </nav>
+      </aside>
+      <section class="kt-card" style="display:grid;grid-template-rows:auto 1fr auto;min-height:calc(100vh - 56px)">
+        <header class="kt-card-pad" style="border-bottom:1px solid var(--border)"><h1 class="kt-title">Assistant administratif</h1><p class="kt-muted">Creation pedagogique, examens et analyse.</p></header>
+        <div id="messages" class="kt-messages"></div>
+        <form id="chatForm" class="kt-chatbar"><textarea id="message" class="kt-textarea" style="min-height:52px" placeholder="Demandez une aide admin..."></textarea><button class="kt-btn primary">Envoyer</button></form>
+      </section>
+    </section>
+  </main>
+  <script src="/assets/js/api.js"></script><script src="/assets/js/auth.js"></script><script src="/assets/js/ui.js"></script><script src="/assets/js/openrouter.js"></script>
+  <script>
+    KTAuth.checkAuth("admin");
+    const messages = document.getElementById("messages");
+    function add(role, text) {
+      const node = document.createElement("div");
+      node.className = "kt-message " + role;
+      node.textContent = text;
+      messages.appendChild(node);
+      messages.scrollTop = messages.scrollHeight;
+    }
+    async function ask(text) {
+      add("user", text);
+      add("ai", "...");
+      try { messages.lastChild.textContent = await KTAI.askLesson(text, "admin"); }
+      catch (error) { messages.lastChild.textContent = error.message; }
+    }
+    document.querySelectorAll("[data-topic]").forEach((button) => button.addEventListener("click", () => ask(button.dataset.topic)));
+    document.getElementById("chatForm").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const input = document.getElementById("message");
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = "";
+      ask(text);
+    });
+    add("ai", "Bonjour. Je peux structurer une formation, generer des examens et analyser les performances etudiantes.");
+  </script>
+</body>
+</html>

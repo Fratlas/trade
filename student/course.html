@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lecteur de module | Katsuki</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body>
+  <div class="kt-shell">
+    <aside id="sidebar" class="kt-sidebar"><div class="kt-brand"><span class="kt-logo">K</span><span>Katsuki<small>Student</small></span></div><nav id="nav" class="kt-nav"></nav><nav class="kt-nav"><button onclick="KTAuth.logout()">Deconnexion</button></nav></aside>
+    <main class="kt-main">
+      <button class="kt-btn kt-mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">Menu</button>
+      <div class="kt-grid" style="grid-template-columns:minmax(240px,30%) 1fr;align-items:start">
+        <aside class="kt-card kt-card-pad">
+          <h2>Modules</h2>
+          <div id="modules" class="kt-nav"></div>
+        </aside>
+        <section class="kt-card kt-card-pad">
+          <div id="video" style="aspect-ratio:16/9;background:#050505;border:1px solid var(--border);border-radius:8px;display:grid;place-items:center;color:var(--muted)">Selectionnez un module</div>
+          <h1 id="title" class="kt-title" style="margin-top:22px">Lecteur de module</h1>
+          <p id="content" class="kt-muted"></p>
+          <textarea id="notes" class="kt-textarea" placeholder="Notes personnelles sauvegardees dans ce navigateur"></textarea>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+            <button id="completeBtn" class="kt-btn primary">Marquer comme termine</button>
+            <a class="kt-btn" href="/student/quiz.html">Passer aux examens</a>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script src="/assets/js/api.js"></script><script src="/assets/js/auth.js"></script><script src="/assets/js/ui.js"></script>
+  <script>
+    KTAuth.checkAuth("student");
+    document.getElementById("nav").innerHTML = KTUi.sidebar("student", "course.html");
+    const params = new URLSearchParams(location.search);
+    let courseId = params.get("courseId") || "1";
+    let activeModule = null;
+    let progress = [];
+
+    function isDone(id) {
+      return progress.some((row) => Number(row.module_id) === Number(id) && Number(row.completed) === 1);
+    }
+
+    function renderModule(module) {
+      activeModule = module;
+      document.getElementById("title").textContent = module.title;
+      document.getElementById("content").textContent = module.content || "Contenu du module a completer.";
+      document.getElementById("notes").value = localStorage.getItem("kt_notes_" + module.id) || "";
+      document.getElementById("video").innerHTML = module.video_url ? `<iframe title="Video" src="${KTUi.escapeHtml(module.video_url)}" style="width:100%;height:100%;border:0;border-radius:8px" allowfullscreen></iframe>` : "<span>Video a ajouter</span>";
+    }
+
+    async function load() {
+      try {
+        const allCourses = await KTApi.get("/courses");
+        if (!params.get("courseId") && allCourses[0]) courseId = allCourses[0].id;
+        const [modules, rows] = await Promise.all([KTApi.get(`/courses/${courseId}/modules`), KTApi.get("/progress")]);
+        progress = rows;
+        document.getElementById("modules").innerHTML = modules.map((module, index) => {
+          const done = isDone(module.id);
+          const locked = index > 0 && !isDone(modules[index - 1].id);
+          return `<button ${locked ? "disabled" : ""} data-id="${module.id}">${done ? "OK" : locked ? "LOCK" : "PLAY"} ${KTUi.escapeHtml(module.title)}</button>`;
+        }).join("");
+        document.querySelectorAll("#modules button").forEach((button) => {
+          button.addEventListener("click", () => renderModule(modules.find((item) => String(item.id) === button.dataset.id)));
+        });
+        renderModule(modules.find((item) => !isDone(item.id)) || modules[0]);
+      } catch (error) {
+        KTUi.toast(error.message);
+      }
+    }
+    document.getElementById("notes").addEventListener("input", (event) => {
+      if (activeModule) localStorage.setItem("kt_notes_" + activeModule.id, event.target.value);
+    });
+    document.getElementById("completeBtn").addEventListener("click", async () => {
+      if (!activeModule) return;
+      await KTApi.post("/progress", { module_id: activeModule.id, completed: true });
+      KTUi.toast("Module marque comme termine.");
+      load();
+    });
+    load();
+  </script>
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Simulateur de Trading | Vue.js + Bootstrap</title>
+  <!-- Bootstrap 5 CSS + Icons + JS Bundle -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- Vue.js 3 (Global build) -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      background: #f4f6f9;
+      font-family: 'Segoe UI', Roboto, system-ui;
+    }
+    .card-header {
+      font-weight: 600;
+      background-color: rgba(0,0,0,0.03);
+    }
+    .price-up {
+      color: #2ecc71;
+      font-weight: bold;
+    }
+    .price-down {
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    .transaction-scroll {
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .badge-price {
+      font-size: 1.1rem;
+      padding: 0.4rem 0.75rem;
+    }
+    .value-number {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    @media (max-width: 768px) {
+      .value-number {
+        font-size: 1rem;
+      }
+      .btn-group-sm-mobile .btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="container py-4">
+    <!-- En-tête -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+      <h1 class="h2"><i class="bi bi-graph-up-arrow"></i> Simulateur de Trading</h1>
+      <div class="mt-2 mt-sm-0">
+        <button class="btn btn-outline-secondary btn-sm me-2" @click="resetPortfolio" :disabled="loading">
+          <i class="bi bi-arrow-repeat"></i> Réinitialiser
+        </button>
+        <button class="btn btn-outline-info btn-sm" @click="toggleAutoPrice" :disabled="loading">
+          <i :class="autoUpdate ? 'bi bi-pause-fill' : 'bi bi-play-fill'"></i>
+          {{ autoUpdate ? 'Pause prix auto' : 'Auto prix' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Ligne info actif principal -->
+    <div class="row g-4">
+      <!-- Carte : Prix et actif -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+          <div class="card-body text-center">
+            <h5 class="card-title text-muted">🔥 Actif simulé</h5>
+            <h3 class="display-6 fw-bold">SIM-ACTION</h3>
+            <div class="mt-3">
+              <span class="badge bg-light text-dark fs-6 px-3 py-2 rounded-pill">
+                Prix unitaire
+              </span>
+              <div class="mt-2">
+                <span :class="priceChangeClass" class="fw-bold display-6">
+                  {{ currentPrice.toFixed(2) }} €
+                </span>
+                <div class="mt-2">
+                  <span v-if="lastPriceVariation !== 0" :class="priceVariationColor">
+                    <i :class="lastPriceVariation > 0 ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                    {{ lastPriceVariation > 0 ? '+' : '' }}{{ lastPriceVariation.toFixed(2) }} €
+                  </span>
+                  <span v-else class="text-muted">— stable</span>
+                </div>
+                <button class="btn btn-sm btn-outline-dark mt-3" @click="randomPrice" :disabled="loading">
+                  <i class="bi bi-shuffle"></i> Générer variation aléatoire
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carte : Portefeuille -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-wallet2"></i> Mon portefeuille</h5>
+            <hr>
+            <div class="d-flex justify-content-between">
+              <span>💰 Liquidités :</span>
+              <strong class="value-number">{{ cash.toFixed(2) }} €</strong>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+              <span>📊 Actions détenues :</span>
+              <strong>{{ shares.toFixed(4) }} unités</strong>
+            </div>
+            <div class="d-flex justify-content-between mt-2">
+              <span>📈 Valeur actions :</span>
+              <strong>{{ (shares * currentPrice).toFixed(2) }} €</strong>
+            </div>
+            <div class="d-flex justify-content-between mt-3 pt-2 border-top">
+              <span>🏦 Total portefeuille :</span>
+              <strong class="text-primary value-number">{{ totalPortfolioValue.toFixed(2) }} €</strong>
+            </div>
+            <div class="d-flex justify-content-between mt-1">
+              <span>📉 Coût moyen (achats) :</span>
+              <strong>{{ avgCost.toFixed(2) }} €</strong>
+            </div>
+            <div v-if="shares > 0" class="d-flex justify-content-between mt-1">
+              <span>💸 P&L flottant :</span>
+              <strong :class="floatingPL >= 0 ? 'text-success' : 'text-danger'">
+                {{ floatingPL >= 0 ? '+' : '' }}{{ floatingPL.toFixed(2) }} €
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carte : Actions rapides + commission -->
+      <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-calculator"></i> Passer un ordre</h5>
+            <hr>
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="commissionSwitch" v-model="useCommission">
+              <label class="form-check-label" for="commissionSwitch">
+                Appliquer une commission (0.1% par transaction)
+              </label>
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text">Quantité</span>
+              <input type="number" step="0.1" class="form-control" v-model.number="tradeQuantity" placeholder="Ex: 10">
+            </div>
+            <div class="d-flex gap-2">
+              <button class="btn btn-success flex-fill" @click="buy" :disabled="loading || tradeQuantity<=0">
+                <i class="bi bi-cart-plus"></i> ACHETER
+              </button>
+              <button class="btn btn-danger flex-fill" @click="sell" :disabled="loading || tradeQuantity<=0">
+                <i class="bi bi-cart-x"></i> VENDRE
+              </button>
+            </div>
+            <small class="text-muted d-block mt-2 text-center">
+              Prix unitaire actuel : {{ currentPrice.toFixed(2) }} €
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historique + graphique symbolique -->
+    <div class="row mt-4 g-4">
+      <div class="col-md-7">
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-header bg-white rounded-top-4">
+            <i class="bi bi-clock-history"></i> Dernières transactions
+          </div>
+          <div class="card-body transaction-scroll p-0">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Heure</th>
+                  <th>Type</th>
+                  <th>Qté</th>
+                  <th>Prix (€)</th>
+                  <th>Total (€)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(tx, idx) in transactions.slice().reverse()" :key="idx">
+                  <td class="small">{{ tx.time }}</td>
+                  <td>
+                    <span :class="tx.type === 'Achat' ? 'badge bg-success' : 'badge bg-danger'">
+                      {{ tx.type }}
+                    </span>
+                  </td>
+                  <td>{{ tx.quantity.toFixed(4) }}</td>
+                  <td>{{ tx.price.toFixed(2) }}</td>
+                  <td :class="tx.type === 'Achat' ? 'text-success' : 'text-danger'">
+                    {{ tx.total.toFixed(2) }}
+                  </td>
+                </tr>
+                <tr v-if="transactions.length === 0">
+                  <td colspan="5" class="text-center text-muted py-4">Aucune transaction pour le moment</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="card shadow-sm border-0 rounded-4 h-100">
+          <div class="card-header bg-white rounded-top-4">
+            <i class="bi bi-info-circle"></i> Aide & infos
+          </div>
+          <div class="card-body">
+            <p><strong>📌 Simulateur d’entraînement</strong><br>
+              Ce simulateur reproduit les ordres d’achat/vente sur un actif unique (SIM-ACTION).<br>
+              Le prix évolue de façon aléatoire. Idéal pour tester une stratégie sans risque réel.
+            </p>
+            <p><strong>⚙️ Fonctionnalités :</strong></p>
+            <ul class="small">
+              <li>Déclenchement manuel du prix (bouton variation)</li>
+              <li>Auto-variation toutes les 4 secondes (activable/désactivable)</li>
+              <li>Commission optionnelle (0.1% par trade)</li>
+              <li>Calcul du P&L flottant, coût moyen, valeur totale</li>
+              <li>Réinitialisation complète du compte</li>
+            </ul>
+            <div v-if="message" :class="['alert', messageType, 'alert-dismissible fade show mt-3 small']" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" @click="clearMessage"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="text-center text-muted mt-5 small">
+      Simulation uniquement — aucun argent réel. <i class="bi bi-currency-exchange"></i>
+    </footer>
+  </div>
+</div>
+
+<script>
+  const { createApp, ref, computed, onMounted, onUnmounted } = Vue;
+
+  createApp({
+    setup() {
+      // données réactives
+      const cash = ref(10000.00);          // liquidités
+      const shares = ref(0);               // quantité détenue
+      const currentPrice = ref(100.00);    // prix initial
+      const transactions = ref([]);
+      const tradeQuantity = ref(1);         // quantité par défaut
+      const useCommission = ref(false);    // commission 0.1%
+      const autoUpdate = ref(false);       // auto prix toggle
+      const loading = ref(false);           // verrou actions
+      const message = ref('');
+      const messageType = ref('alert-success');
+      let priceInterval = null;
+      
+      // suivi variation dernière modification pour affichage
+      const lastPriceVariation = ref(0);
+      
+      // Helper : afficher message
+      const showMessage = (text, type = 'success') => {
+        message.value = text;
+        messageType.value = `alert-${type}`;
+        setTimeout(() => {
+          if (message.value === text) clearMessage();
+        }, 3500);
+      };
+      const clearMessage = () => { message.value = ''; };
+
+      // Calculs utiles
+      const totalPortfolioValue = computed(() => cash.value + (shares.value * currentPrice.value));
+      const avgCost = computed(() => {
+        if (shares.value === 0) return 0;
+        let totalCost = 0;
+        // On reconstitue le coût total à partir de l'historique (méthode fiable)
+        // Alternative : on maintient un "totalCostBasis" mais pour simplifier on recalcule depuis les achats uniquement.
+        // Ici, on calcule le coût moyen sur la base des transactions d'achat uniquement (coût total investi / quantité achetée nette)
+        // Comme on permet les ventes, il faut suivre le coût ajusté. On va stocker le coût cumulé dans une variable privée ?
+        // Pour plus de précision, créons une variable réactive costBasis (somme des achats en €) et sharesBoughtHistory
+        // Mais on peut aussi calculer dynamiquement à partir du tableau des transactions:
+        let totalSpentOnBuys = 0;
+        let totalBoughtShares = 0;
+        transactions.value.forEach(tx => {
+          if (tx.type === 'Achat') {
+            totalSpentOnBuys += (tx.quantity * tx.price);
+            totalBoughtShares += tx.quantity;
+          }
+        });
+        if (totalBoughtShares === 0) return 0;
+        return totalSpentOnBuys / totalBoughtShares;
+      });
+      
+      const floatingPL = computed(() => {
+        if (shares.value === 0) return 0;
+        return shares.value * (currentPrice.value - avgCost.value);
+      });
+      
+      const priceChangeClass = computed(() => {
+        if (lastPriceVariation.value > 0) return 'price-up';
+        if (lastPriceVariation.value < 0) return 'price-down';
+        return '';
+      });
+      const priceVariationColor = computed(() => {
+        if (lastPriceVariation.value > 0) return 'text-success';
+        if (lastPriceVariation.value < 0) return 'text-danger';
+        return 'text-muted';
+      });
+      
+      // Fonction pour ajouter une transaction
+      const addTransaction = (type, quantity, price, totalWithCommission) => {
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+        transactions.value.push({
+          time: timeStr,
+          type: type,
+          quantity: quantity,
+          price: price,
+          total: totalWithCommission
+        });
+        // garder seulement les 30 derniers pour éviter trop de mémoire
+        if (transactions.value.length > 50) transactions.value.shift();
+      };
+      
+      // Calcul commission
+      const getCommissionAmount = (orderTotal) => {
+        if (!useCommission.value) return 0;
+        return orderTotal * 0.001; // 0.1%
+      };
+      
+      // Achat
+      const buy = () => {
+        let qty = parseFloat(tradeQuantity.value);
+        if (isNaN(qty) || qty <= 0) {
+          showMessage("Quantité invalide", "danger");
+          return;
+        }
+        const totalRaw = qty * currentPrice.value;
+        const commission = getCommissionAmount(totalRaw);
+        const totalCost = totalRaw + commission;
+        if (totalCost > cash.value) {
+          showMessage(`Fonds insuffisants. Besoin de ${totalCost.toFixed(2)} € (dont commission ${commission.toFixed(2)}€)`, "danger");
+          return;
+        }
+        loading.value = true;
+        // exécution
+        cash.value -= totalCost;
+        shares.value += qty;
+        addTransaction('Achat', qty, currentPrice.value, totalCost);
+        showMessage(`Achat réussi : ${qty} unités à ${currentPrice.value.toFixed(2)} € (frais: ${commission.toFixed(2)}€)`, "success");
+        loading.value = false;
+        tradeQuantity.value = 1;
+      };
+      
+      // Vente
+      const sell = () => {
+        let qty = parseFloat(tradeQuantity.value);
+        if (isNaN(qty) || qty <= 0) {
+          showMessage("Quantité invalide", "danger");
+          return;
+        }
+        if (qty > shares.value) {
+          showMessage(`Vous ne possédez que ${shares.value.toFixed(4)} unités`, "danger");
+          return;
+        }
+        const totalRaw = qty * currentPrice.value;
+        const commission = getCommissionAmount(totalRaw);
+        const totalReceived = totalRaw - commission;
+        if (totalReceived < 0) {
+          showMessage("Commission anormale, vente impossible", "danger");
+          return;
+        }
+        loading.value = true;
+        cash.value += totalReceived;
+        shares.value -= qty;
+        addTransaction('Vente', qty, currentPrice.value, totalReceived);
+        showMessage(`Vente réussie : ${qty} unités à ${currentPrice.value.toFixed(2)} € (frais: ${commission.toFixed(2)}€)`, "success");
+        loading.value = false;
+        tradeQuantity.value = 1;
+      };
+      
+      // Mise à jour du prix avec variation aléatoire (entre -3% et +3%)
+      const updatePriceRandom = () => {
+        const oldPrice = currentPrice.value;
+        const variationPercent = (Math.random() * 6) - 3;   // -3% à +3%
+        let newPrice = oldPrice * (1 + variationPercent / 100);
+        newPrice = Math.max(0.01, newPrice); // ne pas passer sous 0.01
+        lastPriceVariation.value = newPrice - oldPrice;
+        currentPrice.value = newPrice;
+      };
+      
+      // génération manuelle aléatoire
+      const randomPrice = () => {
+        if (loading.value) return;
+        updatePriceRandom();
+        showMessage(`Nouveau prix : ${currentPrice.value.toFixed(2)} € (variation ${lastPriceVariation.value > 0 ? '+' : ''}${lastPriceVariation.value.toFixed(2)}€)`, "info");
+      };
+      
+      // Auto update toggle
+      const toggleAutoPrice = () => {
+        autoUpdate.value = !autoUpdate.value;
+        if (autoUpdate.value) {
+          if (priceInterval) clearInterval(priceInterval);
+          priceInterval = setInterval(() => {
+            if (!autoUpdate.value) return;
+            updatePriceRandom();
+          }, 4000);
+          showMessage("Mise à jour automatique du prix activée (toutes les 4s)", "info");
+        } else {
+          if (priceInterval) {
+            clearInterval(priceInterval);
+            priceInterval = null;
+          }
+          showMessage("Mise à jour automatique désactivée", "warning");
+        }
+      };
+      
+      // Reset complet : remet les valeurs initiales, stop auto, efface historique
+      const resetPortfolio = () => {
+        if (autoUpdate.value) {
+          toggleAutoPrice(); // désactive l'auto si actif
+        }
+        cash.value = 10000.00;
+        shares.value = 0;
+        currentPrice.value = 100.00;
+        transactions.value = [];
+        tradeQuantity.value = 1;
+        useCommission.value = false;
+        lastPriceVariation.value = 0;
+        showMessage("Portefeuille réinitialisé (10 000 €, aucune position)", "success");
+      };
+      
+      // Nettoyage de l'intervalle
+      onUnmounted(() => {
+        if (priceInterval) clearInterval(priceInterval);
+      });
+      
+      onMounted(() => {
+        // aucune initialisation auto
+        console.log("Simulateur prêt - trading fictif");
+      });
+      
+      return {
+        cash,
+        shares,
+        currentPrice,
+        transactions,
+        tradeQuantity,
+        useCommission,
+        autoUpdate,
+        loading,
+        message,
+        messageType,
+        lastPriceVariation,
+        totalPortfolioValue,
+        avgCost,
+        floatingPL,
+        priceChangeClass,
+        priceVariationColor,
+        buy,
+        sell,
+        randomPrice,
+        toggleAutoPrice,
+        resetPortfolio,
+        clearMessage
+      };
+    }
+  }).mount('#app');
+</script>
+
+<!-- Bootstrap JS bundle requis pour les toasts/alerts dynamiques -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
