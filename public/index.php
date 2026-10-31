@@ -14,7 +14,7 @@ set_exception_handler(function($e) {
     error_log($e->getMessage() . "\n" . $e->getTraceAsString());
     http_response_code(500);
     header('Content-Type: application/json; charset=UTF-8');
-    echo json_encode(['error' => 'Internal Server Error', 'details' => $e->getMessage()]);
+    echo json_encode(['error' => 'Erreur interne du serveur']);
     exit;
 });
 
@@ -28,4 +28,5 @@ require_once __DIR__ . '/../src/controller/AIController.php';
 require_once __DIR__ . '/../src/controller/AdminController.php';
 require_once __DIR__ . '/../src/controller/ChatController.php';
 require_once __DIR__ . '/../src/controller/RealtimeController.php';
+require_once __DIR__ . '/../src/controller/CopyTradingController.php';
 require_once __DIR__ . '/../src/routes.php';

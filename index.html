@@ -1,3 +1,6 @@
+Warning: truncated output (original token count: 24492)
+Total output lines: 1218
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -204,6 +207,8 @@
                         <div class="flex flex-col leading-tight"><span class="text-lg font-black tracking-tighter uppercase italic">Katsuki</span><span class="text-red-500 text-sm font-bold tracking-widest uppercase">Trading</span></div>
                     </button>
                     <div class="hidden md:flex items-center space-x-1">
+                        <a href="/copy-trading.html" class="nav-link px-3 py-3 rounded-xl text-sm font-bold text-red-400 hover:text-white">Copy Trading</a>
+                        <a href="/broker-guides.html" class="nav-link px-3 py-3 rounded-xl text-sm font-bold text-gray-300 hover:text-red-400">Guides brokers</a>
                         <a v-for="item in navItems" :key="item.id" @click="setView(item.id)" class="nav-link px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer relative overflow-hidden group" :class="{'text-red-500': currentView === item.id, 'text-gray-400 hover:text-white': currentView !== item.id}">
                             <span class="relative z-10 flex items-center gap-2"><i :class="item.icon" class="text-xs"></i>{{item.label}}</span>
                             <div v-if="currentView === item.id" class="absolute inset-0 bg-red-500/10 rounded-xl"></div>
@@ -223,6 +228,8 @@
                     </div>
                 </div>
                 <div v-if="mobileMenuOpen" class="md:hidden py-6 border-t border-white/5 animate-fadeIn">
+                    <a href="/copy-trading.html" class="block px-4 py-4 text-red-400 font-bold">Copy Trading</a>
+                    <a href="/broker-guides.html" class="block px-4 py-4 text-gray-300 font-bold">Guides Weltrade &amp; Deriv</a>
                     <a v-for="item in navItems" :key="item.id" @click="setView(item.id)" class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-medium transition-all cursor-pointer mb-2" :class="{'bg-red-600/10 text-red-500': currentView === item.id, 'text-gray-400 hover:bg-white/5': currentView !== item.id}">
                         <i :class="item.icon" class="w-5 text-center"></i><span>{{item.label}}</span><span v-if="currentView === item.id" class="ml-auto w-2 h-2 bg-red-500 rounded-full pulse-ring"></span>
                     </a>
@@ -486,222 +493,7 @@
                                         <h4 class="text-xl md:text-2xl font-bold mt-2 mb-3">La Discipline du Guerrier</h4>
                                         <p class="text-gray-400 text-sm leading-relaxed max-w-md">
                                             Vous implémentez une routine. Vous tradez comme un athlète de haut niveau s'entraîne : 
-                                            avec constance, avec méthode, sans émotion. Chaque matin, même rituel. Chaque trade, même protocole.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="relative flex items-center timeline-item fade-in-up stagger-4">
-                                <div class="w-1/2 pr-16 text-right timeline-side">
-                                    <div class="inline-block timeline-card bg-red-500/10 border border-red-500/30 rounded-2xl px-6 py-4 mobile-card-pad">
-                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase 3</span>
-                                        <h4 class="text-xl md:text-2xl font-bold mt-2 mb-3">La Maîtrise de Soi</h4>
-                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md md:ml-auto">
-                                            Le marché n'est plus un adversaire. C'est un miroir. Vous ne combattez plus les mouvements de prix, 
-                                            vous combattez vos propres démons intérieurs : la peur, l'avidité, l'impatience, l'ego. C'est là que tout bascule.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="timeline-dot absolute left-1/2 -translate-x-1/2 w-6 h-6 bg-red-500 rounded-full shadow-lg shadow-red-500/50 z-10"></div>
-                                <div class="w-1/2 pl-16 timeline-spacer"></div>
-                            </div>
-
-                            <div class="relative flex items-center timeline-item fade-in-up stagger-6">
-                                <div class="w-1/2 pr-16 timeline-spacer"></div>
-                                <div class="timeline-dot absolute left-1/2 -translate-x-1/2 w-8 h-8 katsuki-gradient-animated rounded-full shadow-2xl shadow-red-500/50 z-10 flex items-center justify-center">
-                                    <i class="fas fa-crown text-xs"></i>
-                                </div>
-                                <div class="w-1/2 pl-16 timeline-side">
-                                    <div class="inline-block timeline-card bg-red-500/20 border border-red-500/50 rounded-2xl px-6 py-4 mobile-card-pad">
-                                        <span class="text-red-400 text-xs font-bold uppercase tracking-widest">Phase Finale</span>
-                                        <h4 class="text-xl md:text-2xl font-bold mt-2 mb-3">L'Excellence Inconsciente</h4>
-                                        <p class="text-gray-400 text-sm leading-relaxed max-w-md">
-                                            Vous ne réfléchissez plus. Vous exécutez. Comme un artiste martial qui ne pense plus aux mouvements, 
-                                            vous laissez vos années d'entraînement s'exprimer à travers vous. Le trading devient une extension de votre être.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION FORMATION AVEC CARTES PLEINES -->
-            <section v-if="currentView === 'formation'" class="pt-32 pb-32 px-4">
-                <div class="max-w-7xl mx-auto">
-                    <div class="text-center mb-20 fade-in-up">
-                        <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
-                            Nos Programmes
-                        </div>
-                        <h2 class="text-4xl md:text-7xl font-black mb-8 mobile-title">L'Arsenal du <span class="katsuki-text">Trader Moderne</span></h2>
-                        <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed mobile-subtitle">
-                            Des formations structurées comme un parcours de combattant. Chaque niveau débloque de nouvelles compétences, 
-                            de nouvelles perspectives, et vous rapproche de la maîtrise ultime des marchés financiers.
-                        </p>
-                    </div>
-
-                    <div class="card-glass rounded-3xl p-6 md:p-12 mb-16 fade-in-up stagger-1 mobile-card-pad">
-                        <h3 class="text-3xl font-bold mb-8 text-center">Pourquoi Nos Formations Sont <span class="katsuki-text">Différentes</span></h3>
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-brain text-red-500 text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-lg font-bold mb-2">Approche Neuropsychologique</h4>
-                                        <p class="text-gray-400 text-sm leading-relaxed">Nous intégrons les neurosciences pour comprendre comment votre cerveau réagit face au risque et à la récompense. Vous apprendrez à reconnaître et neutraliser vos biais cognitifs.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-dumbbell text-red-500 text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-lg font-bold mb-2">Entraînement Progressif</h4>
-                                        <p class="text-gray-400 text-sm leading-relaxed">Comme un athlète, vous progressez par paliers. Chaque module valide des compétences avant de passer au suivant. Pas de saut, pas de raccourci.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-users text-red-500 text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-lg font-bold mb-2">Communauté d'Élite</h4>
-                                        <p class="text-gray-400 text-sm leading-relaxed">Vous n'êtes pas seul. Intégrez un cercle fermé de traders partageant les mêmes standards d'excellence. Échangez, progressez, challengez-vous mutuellement.</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-start gap-4">
-                                    <div class="w-12 h-12 bg-red-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                                        <i class="fas fa-chart-line text-red-500 text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-lg font-bold mb-2">Suivi Personnalisé</h4>
-                                        <p class="text-gray-400 text-sm leading-relaxed">Un mentor dédié analyse vos performances, identifie vos points faibles, et ajuste votre parcours. Vous n'êtes pas un numéro, vous êtes un projet d'excellence.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-if="coursesLoading" class="text-center text-gray-400 py-12">Chargement des formations...</div>
-                    <div v-else-if="!courses.length" class="text-center text-gray-400 py-12 card-glass rounded-3xl p-8">Aucune formation disponible pour le moment.</div>
-                    <div v-else class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <div v-for="(course, index) in courses" :key="course.id"
-                             class="course-card card-glass card-glass-hover rounded-3xl overflow-hidden fade-in-up mx-auto w-full max-w-md md:max-w-none"
-                             :class="'stagger-' + (index + 2)">
-                            <div class="p-6 md:p-10 flex flex-col h-full mobile-card-pad">
-                                <div>
-                                    <div class="w-16 h-16 md:w-20 md:h-20 katsuki-gradient rounded-2xl flex items-center justify-center mb-6 md:mb-8 text-2xl md:text-3xl shadow-xl shadow-red-600/30 mx-auto md:mx-0">
-                                        <i :class="course.icon || 'fas fa-chart-line'"></i>
-                                    </div>
-                                    <div class="mb-6 text-center md:text-left">
-                                        <div class="inline-block px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider mb-4"
-                                             :class="course.level === 'Débutant' ? 'bg-green-500/20 text-green-400' : course.level === 'Avancé' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-red-500/20 text-red-400'">
-                                            {{course.level}}
-                                        </div>
-                                        <h3 class="text-2xl md:text-3xl font-bold mb-4">{{course.title}}</h3>
-                                        <p class="text-gray-400 leading-relaxed text-sm mb-6">{{course.full_desc}}</p>
-                                    </div>
-                                    <div v-if="course.features && course.features.length" class="space-y-4 mb-8">
-                                        <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300">Ce que vous allez maîtriser :</h4>
-                                        <div v-for="feature in course.features" :key="feature" class="flex items-center gap-3 text-sm">
-                                            <div class="w-6 h-6 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                                                <i class="fas fa-check text-red-500 text-xs"></i>
-                                            </div>
-                                            <span class="text-gray-300">{{feature}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-auto space-y-3">
-                                    <div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-clock text-red-500/70 w-5"></i><span>{{course.duration}}</span></div>
-                                    <div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-video text-red-500/70 w-5"></i><span>{{course.modules_count}} modules vidéo</span></div>
-                                    <div class="flex items-center gap-2 text-sm text-gray-400"><i class="fas fa-certificate text-red-500/70 w-5"></i><span>Certification incluse</span></div>
-                                </div>
-                                <div class="mt-8 border-t border-white/5 pt-8">
-                                    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6 text-center sm:text-left">
-                                        <div>
-                                            <span class="text-3xl md:text-4xl font-black katsuki-text">{{ formatPrice(course.price) }}€</span>
-                                            <span v-if="course.original_price" class="text-lg text-gray-500 line-through ml-3">{{ formatPrice(course.original_price) }}€</span>
-                                        </div>
-                                        <span v-if="course.spots" class="text-xs text-red-400 font-semibold animate-pulse">{{course.spots}} places restantes</span>
-                                    </div>
-                                    <button @click="enrollCourse(course.id)" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-2xl font-bold transition-all transform hover:scale-105 shadow-lg shadow-red-600/20">
-                                        <span class="flex items-center justify-center gap-2">{{ enrollLabel(course) }} <i class="fas fa-arrow-right text-sm"></i></span>
-                                    </button>
-                                    <div v-if="isLoggedIn && courseProgress[course.id]" class="mt-4 text-center text-sm text-gray-400">
-                                        Progression : {{ courseProgress[course.id].completed }} / {{ courseProgress[course.id].total }} modules
-                                        <div class="h-2 bg-white/10 rounded-full mt-2 overflow-hidden"><div class="h-full katsuki-gradient" :style="{ width: progressPercent(course.id) + '%' }"></div></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- FAQ ACCUEIL -->
-            <section v-if="currentView === 'home'" class="py-20 md:py-28 px-4 bg-black/30">
-                <div class="max-w-3xl mx-auto">
-                    <div class="text-center mb-12 reveal" data-reveal>
-                        <div class="inline-block mb-4 px-5 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-xs font-bold uppercase tracking-widest">FAQ</div>
-                        <h2 class="text-3xl md:text-5xl font-black">Questions <span class="katsuki-text">fréquentes</span></h2>
-                    </div>
-                    <div class="space-y-3 reveal" data-reveal>
-                        <div v-for="(faq, idx) in homeFAQ" :key="idx" class="card-glass rounded-2xl overflow-hidden">
-                            <button type="button" @click="faq.open = !faq.open" class="w-full p-5 md:p-6 flex justify-between items-center gap-4 text-left hover:bg-white/5 transition">
-                                <span class="font-semibold">{{ faq.question }}</span>
-                                <i :class="faq.open ? 'fas fa-chevron-up' : 'fas fa-chevron-down'" class="text-red-500 flex-shrink-0"></i>
-                            </button>
-                            <div class="accordion-content px-5 md:px-6" :class="{ active: faq.open }">
-                                <p class="text-gray-400 text-sm leading-relaxed pb-4">{{ faq.answer }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <p class="text-center text-gray-500 text-sm mt-8 reveal" data-reveal">Une autre question ? <a href="/auth/login.php" class="text-red-400 hover:underline">Contactez-nous via la messagerie</a> une fois inscrit.</p>
-                </div>
-            </section>
-
-            <!-- SECTION TÉMOIGNAGES -->
-            <section v-if="currentView === 'home' || currentView === 'philosophy'" class="py-20 md:py-32 px-4 bg-black/30 relative overflow-hidden">
-                <div class="max-w-7xl mx-auto">
-                    <div class="text-center mb-20 fade-in-up">
-                        <h2 class="text-4xl md:text-7xl font-black mb-6 mobile-title">Ils Ont <span class="katsuki-text">Transformé</span> Leur Trading</h2>
-                        <p class="text-gray-400 text-xl max-w-3xl mx-auto">
-                            Des centaines de traders ont déjà franchi le pas. Voici leurs histoires, sans filtre, sans artifice.
-                        </p>
-                    </div>
-
-                    <!-- Grille responsive : les témoignages sont tous visibles, sans animation de défilement -->
-                    <div class="testimonials-grid">
-                        <div v-for="testimonial in testimonials" :key="testimonial.name"
-                             class="card-glass card-glass-hover rounded-3xl p-10 flex flex-col h-full">
-                            <div class="flex items-center gap-1 mb-6">
-                                <i v-for="star in 5" :key="star" class="fas fa-star text-yellow-500 text-sm"></i>
-                            </div>
-                            <p class="text-gray-300 leading-relaxed mb-8 italic flex-grow">"{{testimonial.quote}}"</p>
-                            <div class="flex items-center gap-4 border-t border-white/5 pt-6">
-                                <div class="w-14 h-14 katsuki-gradient rounded-2xl flex items-center justify-center font-bold text-xl">
-                                    {{testimonial.initials}}
-                                </div>
-                                <div>
-                                    <div class="font-bold">{{testimonial.name}}</div>
-                                    <div class="text-sm text-gray-500">{{testimonial.role}}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION PSYCHOLOGIE -->
-            <section v-if="currentView === 'psychology'" class="pt-32 pb-32 px-4">
-                <div class="max-w-7xl mx-auto">
-                    <div class="text-center mb-20 fade-in-up">
+                                            avec constance, avec mé…4492 tokens truncated…in-up">
                         <div class="inline-block mb-6 px-6 py-2 rounded-full border border-red-500/20 bg-red-500/5 text-red-400 text-sm font-bold uppercase tracking-widest">
                             Le Mental
                         </div>

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Espace de copy trading Katsuki : traders maîtres, abonnements, limites de risque et signaux simulés.">
+  <title>Copy Trading | Katsuki Trading</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-zinc-950 text-zinc-100">
+  <header class="sticky top-0 z-20 border-b border-white/10 bg-zinc-950/90 backdrop-blur-xl">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
+      <a href="/" class="text-lg font-black">KATSUKI <span class="text-red-500">TRADING</span></a>
+      <div class="flex gap-4 text-sm"><a href="/broker-guides.html" class="text-red-300 hover:text-white">Guides Weltrade / Deriv</a><a href="/" class="text-zinc-300 hover:text-white">Accueil</a></div>
+    </nav>
+  </header>
+  <main class="mx-auto max-w-7xl space-y-8 px-5 py-10">
+    <section class="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+      <div><p class="text-xs font-bold uppercase tracking-[.22em] text-red-400">Espace investisseurs &amp; traders</p><h1 class="mt-3 text-4xl font-black md:text-6xl">Copy Trading</h1><p class="mt-3 max-w-2xl leading-7 text-zinc-400">Suivez des traders maîtres, réglez vos limites et suspendez votre abonnement quand vous le souhaitez.</p></div>
+      <span class="w-fit rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-xs font-semibold text-amber-200">MODE SIMULATION · AUCUN ORDRE RÉEL</span>
+    </section>
+    <div id="message" role="status" aria-live="polite" class="hidden rounded-2xl border border-white/10 bg-zinc-900 p-4 text-sm"></div>
+    <section id="signedOut" class="rounded-3xl border border-white/10 bg-zinc-900 p-7">
+      <h2 class="text-xl font-bold">Connectez-vous à Katsuki Trading</h2><p class="mt-2 text-sm text-zinc-400">Utilisez votre compte sur la page d’accueil. Votre session sera partagée dans ce navigateur.</p><a href="/" class="mt-5 inline-flex rounded-xl bg-red-600 px-5 py-3 font-semibold hover:bg-red-500">Aller à l’accueil</a>
+    </section>
+    <div id="workspace" class="hidden space-y-8">
+      <section class="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
+        <div class="rounded-3xl border border-white/10 bg-zinc-900 p-6 md:p-8">
+          <div class="flex flex-wrap items-center justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-widest text-red-400">Choisir une stratégie</p><h2 class="mt-2 text-2xl font-bold">Traders maîtres disponibles</h2></div><button id="refresh" class="rounded-xl border border-white/10 px-4 py-2 text-sm hover:border-red-400/50">Actualiser</button></div>
+          <div id="traders" class="mt-5 grid gap-4 sm:grid-cols-2"></div>
+        </div>
+        <div class="rounded-3xl border border-white/10 bg-zinc-900 p-6 md:p-8">
+          <p class="text-xs font-bold uppercase tracking-widest text-red-400">Paramètres suiveur</p><h2 class="mt-2 text-2xl font-bold">Créer un abonnement</h2>
+          <form id="followForm" class="mt-5 space-y-4">
+            <label class="block text-sm text-zinc-300">Trader maître<select id="traderSelect" required class="mt-2 block w-full rounded-xl border border-white/10 bg-zinc-800 p-3 text-white"></select></label>
+            <div class="grid gap-4 sm:grid-cols-2"><label class="block text-sm text-zinc-300">Allocation max. (%)<input id="allocation" type="number" min="0.01" max="100" step="0.01" value="10" required class="mt-2 block w-full rounded-xl border border-white/10 bg-zinc-800 p-3 text-white"></label><label class="block text-sm text-zinc-300">Perte max. simulée (%)<input id="lossLimit" type="number" min="0.01" max="100" step="0.01" value="5" required class="mt-2 block w-full rounded-xl border border-white/10 bg-zinc-800 p-3 text-white"></label></div>
+            <label class="flex gap-3 text-sm leading-6 text-zinc-400"><input id="consent" type="checkbox" required class="mt-1 accent-red-500"><span>Je comprends le risque de perte. Cet abonnement restera en pause jusqu’à mon activation.</span></label>
+            <button class="w-full rounded-xl bg-red-600 px-5 py-3 font-bold hover:bg-red-500">Créer en pause</button>
+          </form>
+        </div>
+      </section>
+      <section class="rounded-3xl border border-white/10 bg-zinc-900 p-6 md:p-8">
+        <div class="flex flex-wrap items-center justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-widest text-red-400">Contrôle personnel</p><h2 class="mt-2 text-2xl font-bold">Mes abonnements</h2></div><span class="text-xs text-zinc-500">Pause = aucun nouveau signal suivi par le système.</span></div>
+        <div id="subscriptions" class="mt-5 space-y-3"></div>
+      </section>
+      <section class="grid gap-6 xl:grid-cols-[.8fr_1.2fr]">
+        <div class="rounded-3xl border border-white/10 bg-zinc-900 p-6 md:p-8">
+          <p class="text-xs font-bold uppercase tracking-widest text-red-400">Devenir maître</p><h2 class="mt-2 text-2xl font-bold">Proposer une stratégie</h2><p id="profileStatus" class="mt-3 text-sm text-zinc-400">Les profils maîtres sont validés par un administrateur avant publication.</p>
+          <form id="masterForm" class="mt-5 space-y-4"><label class="block text-sm text-zinc-300">Nom public<input id="masterName" maxlength="100" required class="mt-2 block w-full rounded-xl border border-white/10 bg-zinc-800 p-3 text-white" placeholder="Nom de votre stratégie"></label><label class="block text-sm text-zinc-300">Présentation<textarea id="masterBio" maxlength="500" rows="4" class="mt-2 block w-full rounded-xl border border-white/10 bg-zinc-800 p-3 text-white" placeholder="Marchés, méthode, expérience, gestion du risque…"></textarea></label><button id="applyMaster" class="rounded-xl border border-red-500/40 px-5 py-3 font-semibold text-red-300 hover:bg-red-500/10">Envoyer la demande</button></form>
+          <form id="signalForm" class="mt-6 hidden border-t border-white/10 pt-6"><p class="text-sm font-bold">Publier un événement de simulation</p><div class="mt-4 grid gap-3 sm:grid-cols-2"><label class="text-xs text-zinc-400">Événement<select id="eventType" class="mt-1 block w-full rounded-lg bg-zinc-800 p-2 text-white"><option value="open">Ouverture</option><option value="modify">Modification SL/TP</option><option value="close">Clôture</option></select></label><label class="text-xs text-zinc-400">Référence position<input id="positionRef" required class="mt-1 block w-full rounded-lg bg-zinc-800 p-2 text-white" placeholder="ex. pos_001"></label><label class="text-xs text-zinc-400">Symbole<input id="symbol" required maxlength="30" class="mt-1 block w-full rounded-lg bg-zinc-800 p-2 uppercase text-white" placeholder="EURUSD"></label><label class="text-xs text-zinc-400">Sens<select id="direction" class="mt-1 block w-full rounded-lg bg-zinc-800 p-2 text-white"><option value="buy">Achat</option><option value="sell">Vente</option></select></label><label class="openField text-xs text-zinc-400">Entrée<input id="entry" type="number" min="0.00000001" step="any" class="mt-1 block w-full rounded-lg bg-zinc-800 p-2 text-white"></label><label class="openField text-xs text-zinc-400">Stop loss<input id="stop" type="number" min="0.00000001" step="any" class="mt-1 block w-full rounded-lg bg-zinc-800 p-2 text-white"></label><label class="openField text-xs text-zinc-400">Take profit<input id="target" type="number" min="0.00000001" step="any" class="mt-1 block w-full rounded-lg bg-zinc-800 p-2 text-white"></label></div><button class="mt-4 w-full rounded-xl bg-red-600 px-5 py-3 font-bold hover:bg-red-500">Publier le signal simulé</button></form>
+        </div>
+        <div class="rounded-3xl border border-white/10 bg-zinc-900 p-6 md:p-8"><div class="flex flex-wrap items-center justify-between gap-3"><div><p class="text-xs font-bold uppercase tracking-widest text-red-400">Flux de marché</p><h2 class="mt-2 text-2xl font-bold">Signaux de mes traders</h2></div><span class="text-xs text-zinc-500">Ouverture · modification · clôture</span></div><div id="signals" class="mt-5 space-y-3"></div></div>
+      </section>
+      <section class="rounded-3xl border border-amber-400/20 bg-amber-950/20 p-6 text-sm leading-6 text-zinc-300"><h2 class="font-bold text-amber-200">Avant de connecter un broker</h2><p class="mt-2">Le code actuel publie et affiche uniquement des signaux simulés. Weltrade et Deriv ne sont pas connectés; ne saisissez ici aucun mot de passe ni jeton broker. Les guides expliquent les parcours natifs et les étapes nécessaires à une future intégration serveur.</p><a href="/broker-guides.html" class="mt-3 inline-flex font-semibold text-red-300 underline underline-offset-4">Lire les guides Weltrade et Deriv →</a></section>
+    </div>
+  </main>
+<script>
+const $ = (selector) => document.querySelector(selector);
+const token = () => localStorage.getItem('katsuki_token') || getCookie('katsuki_token');
+function getCookie(name) { const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)')); return match ? decodeURIComponent(match[1]) : ''; }
+function message(text, error=false) { const box=$('#message'); box.textContent=text; box.className='rounded-2xl border p-4 text-sm '+(error?'border-red-400/30 bg-red-950/40 text-red-200':'border-emerald-400/30 bg-emerald-950/30 text-emerald-200'); box.classList.remove('hidden'); box.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+function node(tag,text,classes='') { const element=document.createElement(tag); element.textContent=text; element.className=classes; return element; }
+async function api(path, options={}) { const authToken=token(); const headers={'Content-Type':'application/json',...(options.headers||{})}; if(authToken) headers.Authorization='Bearer '+authToken; const response=await fetch('/api'+path,{...options,credentials:'same-origin',headers}); const body=await response.json().catch(()=>({error:'Réponse serveur invalide'})); if(!response.ok) { const error=new Error(body.error||'Erreur API'); error.status=response.status; throw error; } return body; }
+function displayStatus(status) { return ({active:'Actif · simulation',paused:'En pause',pending:'En attente de validation',rejected:'Refusé'})[status]||status; }
+async function loadAll() {
+  $('#signedOut').classList.add('hidden'); $('#workspace').classList.remove('hidden');
+  try {
+    const [traderData, subscriptionData, profileData, signalData] = await Promise.all([api('/copy/traders'),api('/copy/subscriptions'),api('/copy/profile'),api('/copy/signals')]);
+    const select=$('#traderSelect'); select.replaceChildren();
+    const tradersBox=$('#traders'); tradersBox.replaceChildren();
+    traderData.traders.forEach(t=>{
+      const option=node('option',t.display_name+' · '+t.followers+' suiveur(s)'); option.value=t.id; select.append(option);
+      const card=node('article','','rounded-2xl border border-white/10 bg-black/20 p-5');
+      card.append(node('h3',t.display_name,'text-lg font-bold'),node('p',t.bio||'Aucune présentation fournie.','mt-2 min-h-10 text-sm text-zinc-400'),node('p',t.followers+' suiveur(s) · '+t.signals_count+' événement(s)','mt-4 text-xs text-red-300'));
+      const choose=node('button','Choisir ce trader','mt-4 rounded-lg border border-white/10 px-3 py-2 text-sm hover:border-red-400/50'); choose.type='button'; choose.addEventListener('click',()=>{select.value=t.id;$('#allocation').focus()}); card.append(choose); tradersBox.append(card);
+    });
+    if(!traderData.traders.length) tradersBox.append(node('p','Aucun profil maître validé pour le moment.','text-sm text-zinc-400'));
+    const subscriptions=$('#subscriptions'); subscriptions.replaceChildren();
+    subscriptionData.subscriptions.forEach(s=>{
+      const row=node('div','','flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 p-4');
+      row.append(node('span',s.display_name+' · allocation '+s.allocation_percent+'% · limite '+s.max_loss_percent+'% · '+displayStatus(s.status),'text-sm'));
+      const button=node('button',s.status==='active'?'Suspendre':'Activer la simulation','rounded-lg bg-zinc-800 px-4 py-2 text-sm hover:bg-red-700'); button.addEventListener('click',async()=>{try{await api('/copy/subscriptions/'+s.id,{method:'PUT',body:JSON.stringify({status:s.status==='active'?'paused':'active'})});await loadAll();}catch(e){message(e.message,true)}}); row.append(button); subscriptions.append(row);
+    });
+    if(!subscriptionData.subscriptions.length) subscriptions.append(node('p','Vous ne suivez encore aucun trader.','text-sm text-zinc-400'));
+    const profile=profileData.profile; const profileStatus=$('#profileStatus'); const masterForm=$('#masterForm');
+    if(profile){profileStatus.textContent='Votre profil « '+profile.display_name+' » est '+displayStatus(profile.status)+'.';masterForm.classList.add('hidden');$('#signalForm').classList.toggle('hidden',profile.status!=='active');}
+    else {profileStatus.textContent='Les profils maîtres sont validés par un administrateur avant publication.';masterForm.classList.remove('hidden');$('#signalForm').classList.add('hidden');}
+    const signals=$('#signals'); signals.replaceChildren();
+    signalData.signals.forEach(s=>{
+      const row=node('article','','rounded-xl border border-white/10 bg-black/20 p-4');
+      row.append(node('div',s.display_name+' · '+s.event_type.toUpperCase()+' · '+s.symbol+' · '+s.direction.toUpperCase(),'font-semibold'),node('div','Position '+s.position_ref+' · entrée '+(s.entry_price??'—')+' · SL '+(s.stop_loss??'—')+' · TP '+(s.take_profit??'—'),'mt-2 text-sm text-zinc-400'),node('time',s.created_at,'mt-2 block text-xs text-zinc-500')); signals.append(row);
+    });
+    if(!signalData.signals.length) signals.append(node('p','Aucun signal reçu. Les abonnements en pause restent visibles dans votre historique.','text-sm text-zinc-400'));
+  } catch(e) { if(e.status===401){$('#signedOut').classList.remove('hidden');$('#workspace').classList.add('hidden');message('Connectez-vous à Katsuki Trading pour accéder au copy trading.',true);}else{message(e.message+' · Vérifiez que la migration sql/copy_trading.sql a été appliquée.',true);} }
+}
+$('#refresh').addEventListener('click',loadAll);
+$('#followForm').addEventListener('submit',async event=>{event.preventDefault();try{const result=await api('/copy/subscriptions',{method:'POST',body:JSON.stringify({trader_id:Number($('#traderSelect').value),allocation_percent:Number($('#allocation').value),max_loss_percent:Number($('#lossLimit').value),risk_consent:$('#consent').checked})});message(result.message);await loadAll();}catch(e){message(e.message,true)}});
+$('#masterForm').addEventListener('submit',async event=>{event.preventDefault();try{const result=await api('/copy/profile',{method:'POST',body:JSON.stringify({display_name:$('#masterName').value,bio:$('#masterBio').value})});message(result.message);await loadAll();}catch(e){message(e.message,true)}});
+$('#eventType').addEventListener('change',()=>{const opening=$('#eventType').value==='open';document.querySelectorAll('.openField').forEach(el=>el.classList.toggle('hidden',!opening));['entry','stop','target'].forEach(id=>$('#'+id).required=opening);});
+$('#signalForm').addEventListener('submit',async event=>{event.preventDefault();try{const result=await api('/copy/signals',{method:'POST',body:JSON.stringify({client_event_id:crypto.randomUUID().replaceAll('-','_'),position_ref:$('#positionRef').value,event_type:$('#eventType').value,symbol:$('#symbol').value,direction:$('#direction').value,entry_price:$('#entry').value||null,stop_loss:$('#stop').value||null,take_profit:$('#target').value||null})});message(result.message);$('#signalForm').reset();await loadAll();}catch(e){message(e.message,true)}});
+$('#eventType').dispatchEvent(new Event('change'));
+loadAll();
+</script>
+</body></html>

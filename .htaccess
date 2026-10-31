@@ -2,6 +2,9 @@ DirectoryIndex index.html index.php
 
 RewriteEngine On
 
+# Never expose server configuration, source code, SQL migrations, or repository metadata.
+RewriteRule ^(config|src|sql|\.git|\.env)(/|$) - [F,L,NC]
+
 RewriteRule ^api/(diagnostic\.php|setup\.php|setup-chat\.php|setup-enrollment\.php)$ public/$1 [L]
 RewriteRule ^api(/.*)?$ public/index.php [QSA,L]
 

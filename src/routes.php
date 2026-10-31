@@ -13,15 +13,13 @@ if ($requestUri === '') {
 
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 
-// Debug and error handling
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
-error_reporting(E_ALL);
-
+// Keep server diagnostics in logs; never return internal details to API clients.
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
 set_exception_handler(function($e) {
     error_log($e->getMessage() . "\n" . $e->getTraceAsString());
     http_response_code(500);
-    echo json_encode(['error' => 'Internal Server Error', 'details' => $e->getMessage()]);
+    echo json_encode(['error' => 'Erreur interne du serveur']);
     exit;
 });
 
@@ -167,6 +165,52 @@ elseif ($requestMethod == 'POST' && $requestUri == '/progress') {
 elseif ($requestMethod == 'GET' && preg_match('/\/courses\/(\d+)\/progress/', $requestUri, $matches)) {
     $payload = AuthMiddleware::authenticate();
     ProgressController::getCourseProgress($payload['user_id'], $matches[1]);
+}
+elseif ($requestMethod == 'GET' && $requestUri == '/copy/traders') {
+    AuthMiddleware::authenticate();
+    CopyTradingController::traders();
+}
+elseif ($requestMethod == 'GET' && $requestUri == '/copy/profile') {
+    $payload = AuthMiddleware::authenticate();
+    CopyTradingController::myProfile((int)$payload['user_id']);
+}
+elseif ($requestMethod == 'POST' && $requestUri == '/copy/profile') {
+    $payload = AuthMiddleware::authenticate();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (!is_array($data)) { http_response_code(400); echo json_encode(['error' => 'JSON invalide']); }
+    else CopyTradingController::applyAsTrader((int)$payload['user_id'], $data);
+}
+elseif ($requestMethod == 'GET' && $requestUri == '/copy/subscriptions') {
+    $payload = AuthMiddleware::authenticate();
+    CopyTradingController::subscriptions((int)$payload['user_id']);
+}
+elseif ($requestMethod == 'POST' && $requestUri == '/copy/subscriptions') {
+    $payload = AuthMiddleware::authenticate();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (!is_array($data)) { http_response_code(400); echo json_encode(['error' => 'JSON invalide']); }
+    else CopyTradingController::follow((int)$payload['user_id'], $data);
+}
+elseif ($requestMethod == 'PUT' && preg_match('/^\/copy\/subscriptions\/(\d+)$/', $requestUri, $matches)) {
+    $payload = AuthMiddleware::authenticate();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (!is_array($data)) { http_response_code(400); echo json_encode(['error' => 'JSON invalide']); }
+    else CopyTradingController::setSubscriptionStatus((int)$payload['user_id'], (int)$matches[1], $data);
+}
+elseif ($requestMethod == 'GET' && $requestUri == '/copy/signals') {
+    $payload = AuthMiddleware::authenticate();
+    CopyTradingController::signals((int)$payload['user_id']);
+}
+elseif ($requestMethod == 'POST' && $requestUri == '/copy/signals') {
+    $payload = AuthMiddleware::authenticate();
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (!is_array($data)) { http_response_code(400); echo json_encode(['error' => 'JSON invalide']); }
+    else CopyTradingController::publishSignal((int)$payload['user_id'], $data);
+}
+elseif ($requestMethod == 'PUT' && preg_match('/^\/copy\/admin\/traders\/(\d+)$/', $requestUri, $matches)) {
+    AuthMiddleware::authenticate(true);
+    $data = json_decode(file_get_contents('php://input'), true);
+    if (!is_array($data)) { http_response_code(400); echo json_encode(['error' => 'JSON invalide']); }
+    else CopyTradingController::moderateTrader((int)$matches[1], $data);
 }
 elseif ($requestMethod == 'GET' && $requestUri == '/messages') {
     $payload = AuthMiddleware::authenticate();
