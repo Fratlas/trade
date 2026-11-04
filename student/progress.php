@@ -8,7 +8,7 @@ $done = count(array_filter($progress, fn($row) => (int)$row['completed'] === 1))
 $total = count($progress);
 kt_page_start('Ma progression', 'student', 'progress.php', $user);
 ?>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <div class="kt-topbar"><div><button class="kt-btn kt-mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">Menu</button><h1 class="kt-title">Ma progression</h1></div><button id="certBtn" class="kt-btn primary">Telecharger mon certificat</button></div>
 <section class="kt-grid cols-2">
@@ -22,8 +22,8 @@ kt_page_start('Ma progression', 'student', 'progress.php', $user);
   </tbody></table>
 </section>
 <script>
-new Chart(document.getElementById("pie"), { type: "doughnut", data: { labels: ["Termines", "Restants"], datasets: [{ data: [<?= $done ?>, <?= max($total - $done, 0) ?>], backgroundColor: ["#c9a84c", "#242424"] }] }, options: { plugins: { legend: { labels: { color: "#fff" } } } } });
-new Chart(document.getElementById("line"), { type: "line", data: { labels: <?= json_encode(array_map(fn($r) => $r['exam_title'], $results)) ?>, datasets: [{ label: "Note", data: <?= json_encode(array_map(fn($r) => (int)$r['percentage'], $results)) ?>, borderColor: "#c9a84c" }] }, options: { scales: { x: { ticks: { color: "#a0a0a0" } }, y: { ticks: { color: "#a0a0a0" } } }, plugins: { legend: { labels: { color: "#fff" } } } } });
+new Chart(document.getElementById("pie"), { type: "doughnut", data: { labels: ["Termines", "Restants"], datasets: [{ data: [<?= $done ?>, <?= max($total - $done, 0) ?>], backgroundColor: ["#d4af55", "#26262b"], borderWidth: 0 }] }, options: { plugins: { legend: { labels: { color: "#fff" } } } } });
+new Chart(document.getElementById("line"), { type: "line", data: { labels: <?= json_encode(array_map(fn($r) => $r['exam_title'], $results)) ?>, datasets: [{ label: "Note", data: <?= json_encode(array_map(fn($r) => (int)$r['percentage'], $results)) ?>, borderColor: "#d4af55", backgroundColor: "rgba(212,175,85,.15)", fill: true, tension: .35, pointBackgroundColor: "#ecd187" }] }, options: { scales: { x: { ticks: { color: "#a0a0a0" } }, y: { ticks: { color: "#a0a0a0" } } }, plugins: { legend: { labels: { color: "#fff" } } } } });
 document.getElementById("certBtn").addEventListener("click", () => {
   const doc = new jspdf.jsPDF({ orientation: "landscape" });
   doc.setFillColor(10, 10, 10); doc.rect(0, 0, 297, 210, "F");
