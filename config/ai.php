@@ -1,4 +1,5 @@
 ﻿<?php
+require_once __DIR__ . '/env.php';
 /**
  * OpenRouter : Qwen principal, Gemma gratuit en secours.
  * Variables d env : OPENROUTER_API_KEY, OPENROUTER_MODEL, OPENROUTER_MODEL_FALLBACK

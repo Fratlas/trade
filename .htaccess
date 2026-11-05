@@ -2,6 +2,11 @@ DirectoryIndex index.html index.php
 
 RewriteEngine On
 
+# Le fichier .env contient les identifiants : jamais servi par le web.
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
 # Never expose server configuration, source code, SQL migrations, or repository metadata.
 RewriteRule ^(config|src|sql|\.git|\.env)(/|$) - [F,L,NC]
 

@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+require_once __DIR__ . '/env.php';
+
 $dbHost = getenv('DB_HOST') ?: 'localhost';
 $dbPort = getenv('DB_PORT') ?: '3306';
 $dbName = getenv('DB_NAME') ?: '';
@@ -9,7 +11,13 @@ $dbPass = getenv('DB_PASS') ?: '';
 $jwtSecret = getenv('JWT_SECRET') ?: '';
 
 if ($dbName === '' || $dbUser === '' || $dbPass === '' || strlen($jwtSecret) < 32) {
-    error_log('Database/JWT environment configuration is incomplete.');
+    $missing = array_keys(array_filter([
+        'DB_NAME' => $dbName === '',
+        'DB_USER' => $dbUser === '',
+        'DB_PASS' => $dbPass === '',
+        'JWT_SECRET (32 caracteres min.)' => strlen($jwtSecret) < 32,
+    ]));
+    error_log('Configuration incomplete, variables manquantes : ' . implode(', ', $missing) . '. Creez le fichier .env (voir .env.example).');
     http_response_code(503);
     header('Content-Type: application/json; charset=UTF-8');
     echo json_encode(['error' => 'Configuration serveur incomplète.']);
